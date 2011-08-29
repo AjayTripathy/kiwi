@@ -21,6 +21,11 @@ myform = web.form.Form(
                 )
 
 
+class firstrev:
+	def POST(self, text):
+		tokens = WordPunctTokenizer().tokenize(text)
+		
+
 class hello: 
 	def GET(self):
 		form = myform()
@@ -37,7 +42,37 @@ class hello:
 		#return make_text(content)
 		#return repetitions
 		returnhtml = """<head>
-<title>Your writing is shit</title>
+<title>Your writing is improving!</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script type="text/javascript" src="/static/jquery.editable-1.3.3.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+$("span").css({'font-weight':'bold'});
+
+var enter = function()
+                {
+			var classname = this.className
+			$("." + classname).css({color:'red'});
+                }
+
+var leave = function()
+		{
+			var classname = this.className
+			$("." + classname).css({color:'black'});
+		}
+
+
+
+$("span").hover(enter, leave)
+
+$("span").editable()
+
+});
+
+
+</script>
+
 </head>
 <body>
 <h1>Bolded Possible Repetitions</h1>
@@ -47,7 +82,7 @@ class hello:
 			if index in repetitions:
 				print "rep here %d" %(index)
 				stemmedtoken = stemmer.stem(token)
-				returnhtml = returnhtml +("""<span class="%s"> %s </span>""" %(stemmedtoken , token))
+				returnhtml = returnhtml +("""<span id="repetition" class="%s"> %s </span>""" %(stemmedtoken , token))
 			else: 
 				returnhtml = returnhtml + token + " " 
 			index = index + 1
