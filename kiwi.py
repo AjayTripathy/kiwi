@@ -95,7 +95,9 @@ $("span").editable({onSubmit:end});
 <p>"""
 		index = 0
 		for token in tokens:
-			if index in repetitions:
+			if (token == '"' or token == "'"):
+				returnhtml = returnhtml + "\"" +  " " #a hack, fix this on serverside
+			elif index in repetitions:
 				stemmedtoken = stemmer.stem(token)
 				returnhtml = returnhtml +("""<span id="repetition" class="%s"> %s </span>""" %(stemmedtoken , token))
 			else: 
