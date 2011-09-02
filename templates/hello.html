@@ -1,5 +1,6 @@
 $def with (form)
-<form name="content" method="POST"> 
+<title> Post the text you want edited here </title>
+<form name="" method="POST"> 
 $if not form.valid: <p>Sorry, your input was invalid.</p>
 $:form.render()
 <input type="submit" value="Check" />

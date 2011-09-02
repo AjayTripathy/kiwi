@@ -11,7 +11,8 @@ def make_text(string):
 
 
 urls = (
-	'/', 'hello')
+	'/', 'hello',
+	'/rev', 'firstrev')
 
 app = web.application(urls, globals())
 render = web.template.render('templates/')
@@ -22,9 +23,13 @@ myform = web.form.Form(
 
 
 class firstrev:
-	def POST(self, text):
+	def POST(self):
+		i =  web.input()
+		text = i.text
 		tokens = WordPunctTokenizer().tokenize(text)
-		
+		stemmer = LancasterStemmer()	
+		txt = stemmer.stem(tokens[0])
+		return txt		
 
 class hello: 
 	def GET(self):
@@ -35,6 +40,7 @@ class hello:
 		form = myform()
 		form.validates()
 		content = form['content'].value
+		print content
 		tokens = WordPunctTokenizer().tokenize(content)
 		finder = ParseBigramCollocationsAndWords(tokens)
 		repetitions = DetectRepetitions(finder, tokens)
@@ -62,11 +68,21 @@ var leave = function()
 			$("." + classname).css({color:'black'});
 		}
 
+var end = function(content)
+		{
+			console.log($(this).get())
+			var self = this
+			$.post("/rev", {text : content.current}, function(data){
+				console.log(data)
+				console.log($(self).get())
+				$(self).removeClass(self.className)
+				$(self).addClass(data)
+			});
+		}
 
+$("span").hover(enter, leave);
 
-$("span").hover(enter, leave)
-
-$("span").editable()
+$("span").editable({onSubmit:end});
 
 });
 
@@ -80,7 +96,6 @@ $("span").editable()
 		index = 0
 		for token in tokens:
 			if index in repetitions:
-				print "rep here %d" %(index)
 				stemmedtoken = stemmer.stem(token)
 				returnhtml = returnhtml +("""<span id="repetition" class="%s"> %s </span>""" %(stemmedtoken , token))
 			else: 
@@ -97,6 +112,7 @@ class ParseBigramCollocationsAndWords(BigramCollocationFinder):
 	def __init__(cls, words, window_size=2):
 		cls.PhrasesIndexes = {}
 		cls.StemmedPhrasesIndexes = {}
+		cls.breadth = 0
 		wfd = FreqDist()
 		bfd = FreqDist()
 		stemmer = LancasterStemmer()
@@ -104,7 +120,6 @@ class ParseBigramCollocationsAndWords(BigramCollocationFinder):
 			raise ValueError, "Specify window_size at least 2"
 		index = 0
 		for window in nltk.util.ingrams(words, window_size, pad_right=True):
-			print window
 			w1 = window[0].lower()
 			'''
 			try:
@@ -143,6 +158,7 @@ class ParseBigramCollocationsAndWords(BigramCollocationFinder):
 					#cls.StemmedPhrasesIndexes[w1 + " " + w2].append(index)
 				bfd.inc((w1,w2))
 			index = index + 1
+		cls.breadth = len(cls.StemmedPhrasesIndexes)
 		BigramCollocationFinder.__init__(cls, wfd, bfd)			
 
 
@@ -153,7 +169,6 @@ class ParseBigramCollocationsAndWords(BigramCollocationFinder):
 def DetectRepetitions(finder, tokens):
 	repetitions = []
 	indexesofrepetitions = []
-	print len(finder.StemmedPhrasesIndexes)
 	for phrase in finder.StemmedPhrasesIndexes:
                 if  not phrase in ['the','s','.',';',',',"'",":", "`","(",")"] :
                         phraseindexes = finder.StemmedPhrasesIndexes[phrase]
@@ -168,7 +183,6 @@ def DetectRepetitions(finder, tokens):
 						if not phraseindexes[i] in indexesofrepetitions:
 							indexesofrepetitions = indexesofrepetitions + [phraseindexes[i]]
                                         i = i + 1
-	print repetitions
 	return indexesofrepetitions			
 '''
 def main(argv):
