@@ -18,7 +18,7 @@ app = web.application(urls, globals())
 render = web.template.render('templates/')
 
 myform = web.form.Form(
-                web.form.Textarea('content', rows=50, cols=80),
+                web.form.Textarea('content', rows=40, cols=80),
                 )
 
 
@@ -40,8 +40,8 @@ class hello:
 		form = myform()
 		form.validates()
 		content = form['content'].value
-		print content
-		tokens = WordPunctTokenizer().tokenize(content)
+		tokens = WordPunctSpaceTokenizer().tokenize(content)
+		print tokens
 		finder = ParseBigramCollocationsAndWords(tokens)
 		repetitions = DetectRepetitions(finder, tokens)
 		stemmer = LancasterStemmer()
@@ -97,6 +97,9 @@ $("span").editable({onSubmit:end});
 		for token in tokens:
 			if (token == '"' or token == "'"):
 				returnhtml = returnhtml + "\"" +  " " #a hack, fix this on serverside
+			elif (token == """\r\n"""):
+				print "detected"
+				returnhtml = returnhtml + """</p> <p>"""
 			elif index in repetitions:
 				stemmedtoken = stemmer.stem(token)
 				returnhtml = returnhtml +("""<span id="repetition" class="%s"> %s </span>""" %(stemmedtoken , token))
@@ -108,7 +111,9 @@ $("span").editable({onSubmit:end});
 </body>
 </html>"""
 
-
+class WordPunctSpaceTokenizer(RegexpTokenizer):
+	def __init__(self):
+		RegexpTokenizer.__init__(self, r'\s+|\w+|[^\w\s]+',  discard_empty=False) 
 
 class ParseBigramCollocationsAndWords(BigramCollocationFinder):
 	def __init__(cls, words, window_size=2):
@@ -130,7 +135,7 @@ class ParseBigramCollocationsAndWords(BigramCollocationFinder):
 				continue	
 			'''
 			if index == 0:
-				if not w1 in ['the','s','.',';',',',"'",":", "`","(",")", "`"]:
+				if not w1 in ['the','s','.',';',',',"'",":", "`","(",")", "`", '"', " " ]:
 					cls.PhrasesIndexes[w1] = [0] 
 					cls.StemmedPhrasesIndexes[stemmer.stem(w1)] = [0]
 			wfd.inc(w1)
@@ -146,7 +151,7 @@ class ParseBigramCollocationsAndWords(BigramCollocationFinder):
 					cls.PhrasesIndexes[w2].append(index + 1)
 
 				stemmedw2 = stemmer.stem(w2)
-				if not stemmedw2 in ['the','s','.',';',',',"'",":", "`","(",")", "`"]:
+				if not stemmedw2 in ['the','s','.',';',',',"'",":", "`","(",")", "`", '"', " "]:
 					if not cls.StemmedPhrasesIndexes.has_key(stemmedw2):
 						cls.StemmedPhrasesIndexes[stemmedw2] = [index + 1]
 					else:
