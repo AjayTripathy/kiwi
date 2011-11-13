@@ -1,7 +1,21 @@
 $def with (form)
-<title> Post the text you want edited here </title>
-<form name="" method="POST"> 
-$if not form.valid: <p>Sorry, your input was invalid.</p>
-$:form.render()
-<input type="submit" value="Edit Text" />
-</form>
+<html>
+	<head>
+		<title> Post the text you want edited here!</title>
+		<link rel="stylesheet" type="text/css" href="static/master.css"/>
+	</head>
+
+	<body>
+		<div id="main">
+			<div id="logo"><img src="static/logo.png"></div>
+			<br>
+			<br>
+			<form name="" method="POST"> 
+			$if not form.valid: <p>Sorry, your input was invalid.</p>
+			$:form.render()
+			<input type="submit" value="Edit Text" />
+			</form>
+		</div>
+	</body>
+</html>
+

@@ -1,0 +1,31 @@
+html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,th,var,optgroup{font-style:inherit;font-weight:inherit;}del,ins{text-decoration:none;}li{list-style:none;}caption,th{text-align:left;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:baseline;}sub{vertical-align:baseline;}legend{color:#000;}input,button,textarea,select,optgroup,option{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;}input,button,textarea,select{font-size:100%;}
+a {outline: none;} /* Gets rid of Firefox's dotted borders */
+a img {border: none;} /* Gets rid of IE's blue borders */
+
+html {
+	min-height: 100%;
+	background: #565654; /* Old browsers */
+	background: -moz-linear-gradient(-45deg,  #565654 0%, #1c1c21 16%, #242026 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#565654), color-stop(16%,#1c1c21), color-stop(100%,#242026)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(-45deg,  #565654 0%,#1c1c21 16%,#242026 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(-45deg,  #565654 0%,#1c1c21 16%,#242026 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(-45deg,  #565654 0%,#1c1c21 16%,#242026 100%); /* IE10+ */
+	background: linear-gradient(-45deg,  #565654 0%,#1c1c21 16%,#242026 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#565654', endColorstr='#242026',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+	font-family: "Segoe UI", Helvetica, Arial;
+	font-size: 16px;
+	color: #FFFFFF;
+}
+
+#main {
+	width: 780px;
+	margin: 0 auto;
+}
+
+#logo {
+	float: left;
+}
+
+label {
+	display: none;
+}

@@ -5,6 +5,7 @@ import nltk
 from nltk import *
 from nltk.corpus import PlaintextCorpusReader
 from nltk.stem import *
+import json
 
 def make_text(string):
 	return string
@@ -12,15 +13,23 @@ def make_text(string):
 
 urls = (
 	'/', 'hello',
-	'/rev', 'firstrev')
+	'/rev', 'firstrev',
+	'/test', 'tester')
 
 app = web.application(urls, globals())
 render = web.template.render('templates/')
 
-myform = web.form.Form(
-                web.form.Textarea('content', rows=40, cols=80),
-                )
+myform = web.form.Form(web.form.Textarea('content', rows=40, cols=80))
 
+
+class tester:
+	def GET(self):
+		contentList = []
+		JSON1 = json.dumps({'word' : 'hello', 'properties' : {'stem': 'hello', 'repetition' : False}})
+		JSON2 = json.dumps({'word' : 'world', 'properties' : {'stem': 'world', 'repetition' : False}})
+		contentList.append(JSON1)
+		contentList.append(JSON2)
+		return render.edit(contentList)
 
 class firstrev:
 	def POST(self):
