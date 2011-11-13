@@ -27,60 +27,57 @@ class tester:
 		JSON2 = json.dumps({'word' : 'world', 'properties' : {'stem': 'world', 'repetition' : False}})
 		contentList.append(JSON1)
 		contentList.append(JSON2)
-		print contentList
+		
 		return render.edit(contentList)
 
 class firstrev:
 	def POST(self):
-		i =  web.input()
+		i =  web.input(text=None)
 		text = i.text
+		print text
 		tokens = WordPunctTokenizer().tokenize(text)
+		stemmer = LancasterStemmer()
 		wrds = []
 		index = 0
 		for token in tokens:
-                        if (token == '"'):
-                                returnhtml = returnhtml + "\"" +  " " #a hack, fix this on serverside
-                                makeJson = {}
-                                makeJson['word'] = "\""
-                                makeJson['properties'] = {}
-                                makeJson['properties']['stem'] = stemmer.stem(token)
-                                makeJson['properties']['repetitions'] = False
-                                makeJson['specialChar'] = False
-                                wrds.append(makeJson)
-                        elif ("""\r\n""" in token):
-                                makeJson = {}
-                                makeJson['word'] = "paragraphbreak"
-                                makeJson['properties'] = {}
-                                makeJson['properties']['stem'] = stemmer.stem(token)
-                                makeJson['properties']['repetitions'] = False
-                                makeJson['specialChar'] = True
-                                wrds.append(makeJson)
-                        elif index in repetitions:
-                                makeJson = {}
-                                makeJson['word'] = token
-                                makeJson['properties'] = {}
-                                makeJson['properties']['stem'] = stemmer.stem(token)
-                                makeJson['properties']['repetitions'] = True
-                                makeJson['specialChar'] = False
-                                wrds.append(makeJson)
-
-                        elif (token == " "):
-                                makeJson = {}
-                                makeJson['word'] = "space"
-                                makeJson['properties'] = {}
-                                makeJson['properties']['stem'] = stemmer.stem(token)
-                                makeJson['properties']['repetitions'] = False
-                                makeJson['specialChar'] = True
-                                wrds.append(makeJson)
-                        else:
-                                #returnhtml = returnhtml + token + " " 
-                                makeJson = {}
-                                makeJson['word'] = token
-                                makeJson['properties'] = {}
-                                makeJson['properties']['stem'] = stemmer.stem(token)
-                                makeJson['properties']['repetitions'] = False
-                                makeJson['specialChar'] = False
-                                wrds.append(makeJson)	
+			if (token == '"'):
+				returnhtml = returnhtml + "\"" +  " " #a hack, fix this on serverside
+				makeJson = {}
+				makeJson['word'] = "\""
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = False
+				makeJson['specialChar'] = False
+				wrds.append(makeJson)
+			elif ("""\r\n""" in token):
+				makeJson = {}
+				makeJson['word'] = "paragraphbreak"
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = False
+				makeJson['specialChar'] = True
+				wrds.append(makeJson)
+			elif (token == " "):
+				makeJson = {}
+				makeJson['word'] = "space"
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = False
+				makeJson['specialChar'] = True
+				wrds.append(makeJson)
+			else:
+				#returnhtml = returnhtml + token + " " 
+				makeJson = {}
+				makeJson['word'] = token
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = False
+				makeJson['specialChar'] = False
+				wrds.append(makeJson)
+			index = index + 1
+		returnJson = json.dumps(wrds)
+		return returnJson
+									
 class hello: 
 	def GET(self):
 		form = myform()
@@ -91,7 +88,6 @@ class hello:
 		form.validates()
 		content = form['content'].value
 		tokens = WordPunctSpaceTokenizer().tokenize(content)
-		print tokens
 		finder = ParseBigramCollocationsAndWords(tokens)
 		repetitions = DetectRepetitions(finder, tokens)
 		stemmer = LancasterStemmer()
@@ -101,37 +97,37 @@ class hello:
 			if (token == '"'):
 				returnhtml = returnhtml + "\"" +  " " #a hack, fix this on serverside
 				makeJson = {}
-                                makeJson['word'] = "\""
-                                makeJson['properties'] = {}
-                                makeJson['properties']['stem'] = stemmer.stem(token)
-                                makeJson['properties']['repetitions'] = False
+				makeJson['word'] = "\""
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = False
 				makeJson['specialChar'] = False
-                                wrds.append(makeJson)
+				wrds.append(makeJson)
 			elif ("""\r\n""" in token):
 				makeJson = {}
-                                makeJson['word'] = "paragraphbreak"
-                                makeJson['properties'] = {}
-                                makeJson['properties']['stem'] = stemmer.stem(token)
-                                makeJson['properties']['repetitions'] = False
+				makeJson['word'] = "paragraphbreak"
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = False
 				makeJson['specialChar'] = True
-                                wrds.append(makeJson)
+				wrds.append(makeJson)
 			elif index in repetitions:
 				makeJson = {}
-                                makeJson['word'] = token
-                                makeJson['properties'] = {}
-                                makeJson['properties']['stem'] = stemmer.stem(token)
-                                makeJson['properties']['repetitions'] = True
+				makeJson['word'] = token
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = True
 				makeJson['specialChar'] = False
-                                wrds.append(makeJson)
+				wrds.append(makeJson)
 
 			elif (token == " "):
 				makeJson = {}
-                                makeJson['word'] = "space"
-                                makeJson['properties'] = {}
-                                makeJson['properties']['stem'] = stemmer.stem(token)
-                                makeJson['properties']['repetitions'] = False
+				makeJson['word'] = "space"
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = False
 				makeJson['specialChar'] = True
-                                wrds.append(makeJson)
+				wrds.append(makeJson)
 			else: 
 				#returnhtml = returnhtml + token + " " 
 				makeJson = {}
@@ -144,7 +140,6 @@ class hello:
 
 			index = index + 1
 		returnJson = json.dumps(wrds)
-		print returnJson
 		return render.edit(returnJson)
 				
 
@@ -214,19 +209,19 @@ def DetectRepetitions(finder, tokens):
 	repetitions = []
 	indexesofrepetitions = []
 	for phrase in finder.StemmedPhrasesIndexes:
-                if  not phrase in ['the','s','.',';',',',"'",":", "`","(",")"] :
-                        phraseindexes = finder.StemmedPhrasesIndexes[phrase]
-                        if len(phraseindexes) > 1:
-                                i = 1
-                                while i < len(phraseindexes):
-                                        diff = phraseindexes[i] - phraseindexes[i - 1]
-                                        if diff < 250:
-                                                repetitions = repetitions +  [tokens[phraseindexes[i-1]] + " " +  tokens[phraseindexes[i]]]
+		if not phrase in ['the','s','.',';',',',"'",":", "`","(",")"] :
+			phraseindexes = finder.StemmedPhrasesIndexes[phrase]
+			if len(phraseindexes) > 1:
+				i = 1
+				while i < len(phraseindexes):
+					diff = phraseindexes[i] - phraseindexes[i - 1]
+					if diff < 250:
+						repetitions = repetitions +  [tokens[phraseindexes[i-1]] + " " +  tokens[phraseindexes[i]]]
 						if not phraseindexes[i-1] in indexesofrepetitions:
 							indexesofrepetitions = indexesofrepetitions + [phraseindexes[i - 1]]
 						if not phraseindexes[i] in indexesofrepetitions:
 							indexesofrepetitions = indexesofrepetitions + [phraseindexes[i]]
-                                        i = i + 1
+					i = i + 1
 	return indexesofrepetitions			
 if __name__ == "__main__":
 #	main(sys.argv[1])
