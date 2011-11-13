@@ -163,6 +163,7 @@ class hello:
 			index = index + 1
 		returnJson = json.dumps(wrds)
 		sorted_x = sorted(wordFreq.iteritems(), key=operator.itemgetter(1))
+		sorted_x.reverse()
 		top5 = []
 		for i in range(5):
 			top5.append(sorted_x[i])
@@ -170,6 +171,7 @@ class hello:
 		for top in top5:
 			dic = {"label" : top[0] ,"values" : [top[1]]}
 			values.append(dic)
+		
 		rJson["values"] = values
 		statistics = json.dumps({"wordCount" : rJson})
 		return render.edit(returnJson, statistics)
