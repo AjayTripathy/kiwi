@@ -6,6 +6,8 @@ from nltk import *
 from nltk.corpus import PlaintextCorpusReader
 from nltk.stem import *
 import json
+import operator
+
 
 def make_text(string):
 	return string
@@ -92,8 +94,28 @@ class hello:
 		repetitions = DetectRepetitions(finder, tokens)
 		stemmer = LancasterStemmer()
 		wrds = []
+
+		sentenceLengths = []
+		rJson = {}
+		rJson["label"] = ["frequency"]
+		wordFreq = {}		
+		
+		currentSentenceLength = 0
 		index = 0
 		for token in tokens:
+			if token in ["!", ".", "?"]:
+				sentenceLengths.append(currentSentenceLength)
+				currentsentenceLength = 0
+			elif token not in [",","-", ":", "'", '"']:
+				currentSentenceLength += 1
+			
+			if token not in ['the','s','.',';',',',"'",":", "`","(",")"]:
+				if token not in wordFreq:
+					wordFreq[token] = 1
+				else:
+					wordFreq[token] += 1
+				 
+				
 			if (token == '"'):
 				returnhtml = returnhtml + "\"" +  " " #a hack, fix this on serverside
 				makeJson = {}
@@ -140,7 +162,17 @@ class hello:
 
 			index = index + 1
 		returnJson = json.dumps(wrds)
-		return render.edit(returnJson)
+		sorted_x = sorted(wordFreq.iteritems(), key=operator.itemgetter(1))
+		top5 = []
+		for i in range(5):
+			top5.append(sorted_x[i])
+		values = []
+		for top in top5:
+			dic = {"label" : top[0] ,"values" : [top[1]]}
+			values.append(dic)
+		rJson["values"] = values
+		statistics = json.dumps({"wordCount" : rJson})
+		return render.edit(returnJson, statistics)
 				
 
 class WordPunctSpaceTokenizer(RegexpTokenizer):
