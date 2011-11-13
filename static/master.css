@@ -17,6 +17,10 @@ html {
 	color: #FFFFFF;
 }
 
+.repetition {
+	font-weight: bold;
+}
+
 #main {
 	width: 780px;
 	margin: 0 auto;
