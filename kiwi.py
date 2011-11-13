@@ -109,7 +109,7 @@ class hello:
 			elif token not in [",","-", ":", "'", '"']:
 				currentSentenceLength += 1
 			
-			if token not in ['the','s','.',';',',',"'",":", "`","(",")"]:
+			if token not in ['the','s','.',';',',',"'",":", "`","(",")", " "]:
 				if token not in wordFreq:
 					wordFreq[token] = 1
 				else:
