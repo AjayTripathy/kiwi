@@ -95,9 +95,12 @@ $("span").editable({onSubmit:end});
 <p>"""
 		index = 0
 		for token in tokens:
-			if (token == '"' or token == "'"):
+			if (token == '"'):
 				returnhtml = returnhtml + "\"" +  " " #a hack, fix this on serverside
-			elif (token == """\r\n"""):
+			#elif (token[:4] == """\r\n"""):
+			#	print "detected"
+			#	returnhtml = returnhtml + """</p> <p>"""
+			elif ("""\r\n""" in token):
 				print "detected"
 				returnhtml = returnhtml + """</p> <p>"""
 			elif index in repetitions:
@@ -183,7 +186,7 @@ def DetectRepetitions(finder, tokens):
                                 i = 1
                                 while i < len(phraseindexes):
                                         diff = phraseindexes[i] - phraseindexes[i - 1]
-                                        if diff < 100:
+                                        if diff < 250:
                                                 repetitions = repetitions +  [tokens[phraseindexes[i-1]] + " " +  tokens[phraseindexes[i]]]
 						if not phraseindexes[i-1] in indexesofrepetitions:
 							indexesofrepetitions = indexesofrepetitions + [phraseindexes[i - 1]]
