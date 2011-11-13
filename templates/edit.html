@@ -7,13 +7,14 @@ $def with (contentList)
 
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
-			var jsonstring = $:(contentList)
-			for (obj in jsonstring) {
-				var jsonobj = jQuery.parseJSON(jsonstring[obj])
+			var jsonarray = $:(contentList)
+			for (i in jsonarray) {
+				console.log(jsonarray[i])
+				var jsonobj = jsonarray[i]
 				var jsonword = jsonobj.word
 				var isSpecialChar = jsonobj.specialChar
 				if (isSpecialChar == true) {
-					if (word == "space") {
+					if (jsonobj.word == "space") {
 						jQuery('#yourwriting').append("&nbsp;")
 					}
 				} else {
@@ -27,6 +28,8 @@ $def with (contentList)
 
 	<body>
 		You are amazing at writing!
+		<br>
+		<br>
 
 		<div id="yourwriting">
 		</div>

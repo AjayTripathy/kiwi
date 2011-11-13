@@ -27,6 +27,7 @@ class tester:
 		JSON2 = json.dumps({'word' : 'world', 'properties' : {'stem': 'world', 'repetition' : False}})
 		contentList.append(JSON1)
 		contentList.append(JSON2)
+		print contentList
 		return render.edit(contentList)
 
 class firstrev:
@@ -101,7 +102,8 @@ class hello:
 
 			index = index + 1
 		returnJson = json.dumps(wrds)
-		return returnJson
+		print returnJson
+		return render.edit(returnJson)
 				
 
 class WordPunctSpaceTokenizer(RegexpTokenizer):
