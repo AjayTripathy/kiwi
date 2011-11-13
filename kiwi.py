@@ -35,10 +35,52 @@ class firstrev:
 		i =  web.input()
 		text = i.text
 		tokens = WordPunctTokenizer().tokenize(text)
-		stemmer = LancasterStemmer()	
-		txt = stemmer.stem(tokens[0])
-		return txt		
+		wrds = []
+		index = 0
+		for token in tokens:
+                        if (token == '"'):
+                                returnhtml = returnhtml + "\"" +  " " #a hack, fix this on serverside
+                                makeJson = {}
+                                makeJson['word'] = "\""
+                                makeJson['properties'] = {}
+                                makeJson['properties']['stem'] = stemmer.stem(token)
+                                makeJson['properties']['repetitions'] = False
+                                makeJson['specialChar'] = False
+                                wrds.append(makeJson)
+                        elif ("""\r\n""" in token):
+                                makeJson = {}
+                                makeJson['word'] = "paragraphbreak"
+                                makeJson['properties'] = {}
+                                makeJson['properties']['stem'] = stemmer.stem(token)
+                                makeJson['properties']['repetitions'] = False
+                                makeJson['specialChar'] = True
+                                wrds.append(makeJson)
+                        elif index in repetitions:
+                                makeJson = {}
+                                makeJson['word'] = token
+                                makeJson['properties'] = {}
+                                makeJson['properties']['stem'] = stemmer.stem(token)
+                                makeJson['properties']['repetitions'] = True
+                                makeJson['specialChar'] = False
+                                wrds.append(makeJson)
 
+                        elif (token == " "):
+                                makeJson = {}
+                                makeJson['word'] = "space"
+                                makeJson['properties'] = {}
+                                makeJson['properties']['stem'] = stemmer.stem(token)
+                                makeJson['properties']['repetitions'] = False
+                                makeJson['specialChar'] = True
+                                wrds.append(makeJson)
+                        else:
+                                #returnhtml = returnhtml + token + " " 
+                                makeJson = {}
+                                makeJson['word'] = token
+                                makeJson['properties'] = {}
+                                makeJson['properties']['stem'] = stemmer.stem(token)
+                                makeJson['properties']['repetitions'] = False
+                                makeJson['specialChar'] = False
+                                wrds.append(makeJson)	
 class hello: 
 	def GET(self):
 		form = myform()
