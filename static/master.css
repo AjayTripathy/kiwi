@@ -18,7 +18,7 @@ html {
 }
 
 .repetition {
-	font-weight: bold;
+	color: #CFCFCF;
 }
 
 .clear {
@@ -48,4 +48,6 @@ label {
 
 #yourwriting {
 	max-width: 780px;
+	background-color: #D3D3D3;
+	color: black;
 }
