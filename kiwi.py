@@ -14,7 +14,7 @@ def make_text(string):
 
 urls = (
 	'/', 'hello',
-	'/rev', 'firstrev',
+	'/rev', 'revision',
 	'/test', 'tester')
 
 app = web.application(urls, globals())
@@ -79,6 +79,100 @@ class firstrev:
 			index = index + 1
 		returnJson = json.dumps(wrds)
 		return returnJson
+class revision:
+	def POST(self):
+		i = web.input(text=None)
+		content = i.text
+		tokens = WordPunctSpaceTokenizer().tokenize(content)
+		finder = ParseBigramCollocationsAndWords(tokens)
+		repetitions = DetectRepetitions(finder, tokens)
+		stemmer = LancasterStemmer()
+		wrds = []
+
+		sentenceLengths = []
+		rJson = {}
+		rJson["label"] = ["frequency"]
+		wordFreq = {}		
+		
+		currentSentenceLength = 0
+		index = 0
+		for token in tokens:
+			if token in ["!", ".", "?"]:
+				sentenceLengths.append(currentSentenceLength)
+				currentsentenceLength = 0
+			elif token not in [",","-", ":", "'", '"']:
+				currentSentenceLength += 1
+			
+			if token not in ['the','s','.',';',',',"'",":", "`","(",")", " "]:
+				if token not in wordFreq:
+					wordFreq[token] = 1
+				else:
+					wordFreq[token] += 1
+				 
+				
+			if (token == '"'):
+				returnhtml = returnhtml + "\"" +  " " #a hack, fix this on serverside
+				makeJson = {}
+				makeJson['word'] = "\""
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = False
+				makeJson['specialChar'] = False
+				wrds.append(makeJson)
+			elif ("""\r\n""" in token):
+				makeJson = {}
+				makeJson['word'] = "paragraphbreak"
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = False
+				makeJson['specialChar'] = True
+				wrds.append(makeJson)
+			elif index in repetitions:
+				makeJson = {}
+				makeJson['word'] = token
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = True
+				makeJson['specialChar'] = False
+				wrds.append(makeJson)
+
+			elif (token == " "):
+				makeJson = {}
+				makeJson['word'] = "space"
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = False
+				makeJson['specialChar'] = True
+				wrds.append(makeJson)
+			else: 
+				#returnhtml = returnhtml + token + " " 
+				makeJson = {}
+				makeJson['word'] = token
+				makeJson['properties'] = {}
+				makeJson['properties']['stem'] = stemmer.stem(token)
+				makeJson['properties']['repetitions'] = False
+				makeJson['specialChar'] = False
+				wrds.append(makeJson)
+
+			index = index + 1
+		returnJson = json.dumps(wrds)
+		sorted_x = sorted(wordFreq.iteritems(), key=operator.itemgetter(1))
+		sorted_x.reverse()
+		top5 = []
+		max5 = len(sorted_x)
+		if max5 >  5:
+			max5 = 5	
+		for i in range(max5):
+			top5.append(sorted_x[i])
+		values = []
+		for top in top5:
+			dic = {"label" : top[0] ,"values" : [top[1]]}
+			values.append(dic)
+		
+		rJson["values"] = values
+		statistics = json.dumps({"wordCount" : rJson})
+		return render.edit(returnJson, statistics)
+	
 									
 class hello: 
 	def GET(self):
