@@ -171,7 +171,9 @@ class revision:
 		
 		rJson["values"] = values
 		statistics = json.dumps({"wordCount" : rJson})
-		return render.edit(returnJson, statistics)
+		#return render.edit(returnJson, statistics)
+		returnval = json.dumps({"text": returnJson, "statistics": statistics})
+		return returnval
 	
 									
 class hello: 
