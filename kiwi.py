@@ -165,7 +165,10 @@ class hello:
 		sorted_x = sorted(wordFreq.iteritems(), key=operator.itemgetter(1))
 		sorted_x.reverse()
 		top5 = []
-		for i in range(5):
+		max5 = len(sorted_x)
+		if max5 >  5:
+			max5 = 5	
+		for i in range(max5):
 			top5.append(sorted_x[i])
 		values = []
 		for top in top5:
