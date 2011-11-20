@@ -20,7 +20,7 @@ urls = (
 app = web.application(urls, globals())
 render = web.template.render('templates/')
 
-myform = web.form.Form(web.form.Textarea('content', rows=40, cols=80))
+myform = web.form.Form(web.form.Textarea('content', rows=30, cols=80))
 
 class tester:
 	def GET(self):
@@ -172,7 +172,7 @@ class revision:
 		
 		#statistics = json.dumps({"wordCount" : rJson})
 		#returnval = json.dumps({"text": returnJson, "statistics": statistics})
-		returnval = json.dumps({"text" : returnJson})
+		returnval = json.dumps({"text" : wrds})
 		#print returnval
 		return returnval
 	
