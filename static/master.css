@@ -4,6 +4,7 @@ a img {border: none;} /* Gets rid of IE's blue borders */
 
 html {
 	min-height: 100%;
+	background-repeat: no-repeat;
 	background: #565654; /* Old browsers */
 	background: -moz-linear-gradient(-45deg,  #565654 0%, #1c1c21 16%, #242026 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#565654), color-stop(16%,#1c1c21), color-stop(100%,#242026)); /* Chrome,Safari4+ */

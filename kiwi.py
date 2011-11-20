@@ -169,9 +169,11 @@ class revision:
 			dic = {"label" : top[0] ,"values" : [top[1]]}
 			values.append(dic)
 		
-		rJson["values"] = values
-		statistics = json.dumps({"wordCount" : rJson})
-		returnval = json.dumps({"text": returnJson, "statistics": statistics})
+		
+		#statistics = json.dumps({"wordCount" : rJson})
+		#returnval = json.dumps({"text": returnJson, "statistics": statistics})
+		returnval = json.dumps({"text" : returnJson})
+		#print returnval
 		return returnval
 	
 									

@@ -44,19 +44,60 @@ $def with (contentList, statistics)
 				jQuery("span[title='"+this.title+"']").css("color", "#366C36")
 			})
 
+			var clean = function () {
+				var text = jQuery("#yourwriting").text()
+				console.log(text)
+				jQuery('#yourwriting').html("")
+				end(text)
+			}
 			
-			var end = function (content) {
+			var end = function (toSend) {
 				var self = this
-				console.log(this)
-				jQuery.post("/rev", {text : content.current});
+				jQuery.post("/rev", {text : toSend}, function (info) {
+					var jsonArray = info.text
+					for (i in jsonArray) {
+						var jsonobj = jsonArray[i]
+						var jsonword = jsonobj.word
+						var isSpecialChar = jsonobj.specialChar
+						if (isSpecialChar == true) {
+							if (jsonobj.word == "space") {
+								jQuery('#yourwriting').append(" ")
+							} else if (jsonobj.word == "paragraphbreak") {
+								jQuery('#yourwriting').append("<br><br>")
+							}
+						} else {
+							var isRepetition = jsonobj.properties.repetitions
+							var stem = jsonobj.properties.stem
+							var toInsert = ""
+							if (isRepetition) {
+								toInsert = "<span class = 'repetition' title='"+stem+"'>"+jsonword+"</span>"
+							} else {
+								toInsert = "<span title='"+stem+"'>"+jsonword+"</span>"
+							}
+							jQuery('#yourwriting').append(toInsert)
+						}
+					}
+
+					jQuery(".repetition").css("font-weight", "bold")
+					jQuery(".repetition").css("color", "#366C36")
+
+					jQuery(".repetition").mouseover(function () {
+						jQuery("span[title='"+this.title+"']").css("color", "red")
+					})
+
+					jQuery(".repetition").mouseleave(function () {
+						jQuery("span[title='"+this.title+"']").css("color", "#366C36")
+					})
+
+					jQuery("span").editable({onSubmit: clean})
+				});
 			}
 
-			jQuery("span").editable({onSubmit: end})
+			jQuery("span").editable({onSubmit: clean})
 
 
 			var statisticsJSON = $:(statistics)
 			var wordCount = statisticsJSON.wordCount
-			console.log(wordCount)
 			var barChart = new $$jit.BarChart({
 				injectInto: 'wordcount',
 				animate: true, 
@@ -76,8 +117,7 @@ $def with (contentList, statistics)
 			barChart.loadJSON(wordCount)
 			
 			
-			
-
+	
 		});
 
 		</script>
@@ -95,6 +135,7 @@ $def with (contentList, statistics)
 			<br>
 			<br>
 			<div id="wordcount"></div>
+			<div class="clear"></div>
 			
 		</div>
 
