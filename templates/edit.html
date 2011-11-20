@@ -7,10 +7,11 @@ $def with (contentList, statistics)
 		<script src="/static/jquery.editable-1.3.3.min.js"></script>
 		<script src="/static/jit-yc.js"></script>
 		<link rel="stylesheet" type="text/css" href="static/master.css"/>
+		<script src="/static/jquery.qtip-1.0.0-rc3.min.js"></script>
+
 		<script type="text/javascript">
-			jQuery(document).ready(function() {
+		jQuery(document).ready(function() {
 			var jsonarray = $:(contentList)
-			console.log(jsonarray)
 			for (i in jsonarray) {
 				var jsonobj = jsonarray[i]
 				var jsonword = jsonobj.word
@@ -34,20 +35,79 @@ $def with (contentList, statistics)
 				}
 			}
 
-			jQuery(".repetition").css("font-weight", "bold")
-			jQuery(".repetition").css("color", "#366C36")
+			var cleanAfterInsert = function () {
+				jQuery(".repetition").css("font-weight", "bold")
+				jQuery(".repetition").css("color", "#366C36")
 
-			jQuery(".repetition").mouseover(function () {
-				jQuery("span[title='"+this.title+"']").css("color", "red")
-			})
+				jQuery(".repetition").mouseover(function () {
+					jQuery("span[title='"+this.title+"']").css("color", "red")
+				})
 
-			jQuery(".repetition").mouseleave(function () {
-				jQuery("span[title='"+this.title+"']").css("color", "#366C36")
-			})
+				jQuery(".repetition").mouseleave(function () {
+					jQuery("span[title='"+this.title+"']").css("color", "#366C36")
+				})
+
+				jQuery("span").editable({onSubmit: clean})
+
+				var process = function (result) {
+					console.log('yay')
+				}
+
+				jQuery("span").qtip({
+					content: "Loading...",
+					api: {
+						beforeShow: function () {
+							var self = this
+
+							
+							jQuery.ajax({
+								url: "http://thesaurus.altervista.org/thesaurus/v1?callback=?",
+								dataType: "jsonp",
+								data: {
+									key: "5ru41HyCW2H8XUbNoIUm",
+									word: self.elements.target.text(),
+									language: "en_US",
+									output: "json"
+								},
+								timeout: 1000,
+								success: function (data) {
+								self.updateContent(data.response[0].list.synonyms)
+								}	
+
+							}).error(function() {
+								self.updateContent("No synonyms :(")
+							});
+						}
+					},
+					show: 'mouseover',
+					hide: 'mouseout',
+					
+					position: {
+						corner: {
+							target: 'topRight',
+							tooltip: 'bottomLeft'
+						}
+					},
+					style: {
+						name: 'cream',
+						tip: {
+							corner:'bottomLeft',
+							size: {
+								x: 3,
+								y: 3
+							}
+						}
+					}
+				});
+
+			}
+
+			cleanAfterInsert()
+
+			
 
 			var clean = function () {
 				var text = jQuery("#yourwriting").text()
-				console.log(text)
 				jQuery('#yourwriting').html("")
 				end(text)
 			}
@@ -80,22 +140,11 @@ $def with (contentList, statistics)
 						}
 					}
 
-					jQuery(".repetition").css("font-weight", "bold")
-					jQuery(".repetition").css("color", "#366C36")
-
-					jQuery(".repetition").mouseover(function () {
-						jQuery("span[title='"+this.title+"']").css("color", "red")
-					})
-
-					jQuery(".repetition").mouseleave(function () {
-						jQuery("span[title='"+this.title+"']").css("color", "#366C36")
-					})
-
-					jQuery("span").editable({onSubmit: clean})
+					cleanAfterInsert()
 				}, "json");
 			}
 
-			jQuery("span").editable({onSubmit: clean})
+			
 
 
 			var statisticsJSON = $:(statistics)
