@@ -55,6 +55,7 @@ def parseContent(content):
         elif ("""\r\n""" in token):
             makeJson = {}
             makeJson['word'] = "paragraphbreak"
+            makeJson['specialChar'] = True
         elif index in repetitions:
             makeJson['word'] = token
             makeJson['properties']['repetitions'] = True
@@ -91,7 +92,6 @@ class tester:
         JSON2 = json.dumps({'word' : 'world', 'properties' : {'stem': 'world', 'repetition' : False}})
         contentList.append(JSON1)
         contentList.append(JSON2)
-
         return render.edit(contentList)
 
 class revision:
