@@ -30,6 +30,7 @@ html {
 	width: 780px;
 	height: 100%;
 	margin: 0 auto;
+	overflow: hidden;
 }
 
 #logo {

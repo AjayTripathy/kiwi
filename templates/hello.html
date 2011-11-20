@@ -10,11 +10,14 @@ $def with (form)
 			<div id="logo"><img src="static/logo.png"></div>
 			<br>
 			<br>
+			<div id="inputform">
 			<form name="" method="POST"> 
 			$if not form.valid: <p>Sorry, your input was invalid.</p>
 			$:form.render()
 			<input type="submit" value="Edit Text" />
 			</form>
+			</div>
+			<div class="clear">
 		</div>
 	</body>
 </html>
