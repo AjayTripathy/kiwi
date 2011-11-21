@@ -7,7 +7,7 @@ from nltk.corpus import PlaintextCorpusReader
 from nltk.stem import *
 import json
 import operator
-
+import couchdb
 
 urls = (
 	'/', 'hello',
@@ -19,6 +19,21 @@ render = web.template.render('templates/')
 
 myform = web.form.Form(web.form.Textarea('content', rows=30, cols=80))
 
+couch = couchdb.Server()
+
+def addUserToCouch(userID):
+    db = couch.create(userID)
+    #Add all the design documents
+
+
+def saveContent(userID, rawContent, parsedContentDict):
+    db = couch[userID]
+    parsedContentDict['rawText'] = rawContent
+    doc = parsedContentDict
+    db.save(doc)
+
+    
+    
 def parseContent(content):
     tokens = WordPunctSpaceTokenizer().tokenize(content)
     finder = ParseBigramCollocationsAndWords(tokens)
@@ -115,6 +130,8 @@ class hello:
         returnJson = json.dumps(returnDict['text'])
         statistics = json.dumps(returnDict['statistics'])
         return render.edit(returnJson, statistics)
+
+
 
 
 class WordPunctSpaceTokenizer(RegexpTokenizer):
