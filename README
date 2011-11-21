@@ -1,2 +1,9 @@
-Dependencies:
-Web.py, NLTK
+Kiwi
+
+=====
+Kiwi is a kiwi
+
+
+'''
+    sudo pip install -r requirements.txt
+'''
