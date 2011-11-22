@@ -24,7 +24,7 @@ couch = couchdb.Server()
 def addUserToCouch(userID):
     db = couch.create(userID)
     #Add all the design documents
-    path = ./couchdbviews/views
+    path = "./couchdbviews/views"
     dirList=os.listdir(path)
     for fname in dirList:
        f = open(argv, 'r')
