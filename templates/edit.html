@@ -35,6 +35,8 @@ $def with (contentList, statistics)
 				}
 			}
 
+
+
 			var cleanAfterInsert = function () {
 				jQuery(".repetition").css("font-weight", "bold")
 				jQuery(".repetition").css("color", "#366C36")
@@ -102,17 +104,14 @@ $def with (contentList, statistics)
 
 			}
 
-			cleanAfterInsert()
-
-			
-
-			var clean = function () {
+			var clean = function (content) {
 				var text = jQuery("#yourwriting").text()
 				jQuery('#yourwriting').html("")
 				end(text)
 			}
 			
 			var end = function (toSend) {
+				console.log("whoa")
 				var self = this
 				jQuery.post("/rev", {text : toSend}, function (info) {
 					jsonArray = info.text
@@ -144,8 +143,7 @@ $def with (contentList, statistics)
 				}, "json");
 			}
 
-			
-
+			cleanAfterInsert()
 
 			var statisticsJSON = $:(statistics)
 			console.log(statisticsJSON)
