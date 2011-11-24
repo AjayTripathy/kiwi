@@ -148,6 +148,7 @@ $def with (contentList, statistics)
 
 
 			var statisticsJSON = $:(statistics)
+			console.log(statisticsJSON)
 			var wordCount = statisticsJSON.wordCount
 			var barChart = new $$jit.BarChart({
 				injectInto: 'wordcount',
@@ -165,7 +166,7 @@ $def with (contentList, statistics)
 				showAggregates: true,
 				showLabels: true, 
 			});
-			barChart.loadJSON(wordCount)
+			barChart.loadJSON(statisticsJSON)
 			
 			
 	
