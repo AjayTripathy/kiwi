@@ -109,7 +109,7 @@ $def with (contentList, statistics)
 			}
 
 			var clean = function (content) {
-				var text = jQuery("#yourwriting").clone().find('span').replaceWith(function() { return this.innerHTML; }).end().find('br').replaceWith(function() { return "\n"; }).end().html()
+				var text = jQuery("#yourwriting").clone().find('span').replaceWith(function() { return this.innerHTML; }).end().find('br').replaceWith(function() { return "\r\n"; }).end().html()
 				console.log(text)
 				jQuery('#yourwriting').html("")
 				end(text)
