@@ -28,7 +28,6 @@ html {
 
 #main {
 	width: 780px;
-	height: 100%;
 	margin: 0 auto;
 	overflow: hidden;
 }
@@ -52,4 +51,14 @@ label {
 	max-width: 780px;
 	background-color: #D3D3D3;
 	color: black;
+}
+
+#overlay {
+	display: none;
+	position: absolute;
+	background: #fff;
+}
+
+#img-load {
+	position: absolute;
 }

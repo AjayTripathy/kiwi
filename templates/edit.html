@@ -38,6 +38,18 @@ $def with (contentList, statistics)
 				}
 			}
 
+			jQuery("#overlay").css({
+				opacity: 0.5,
+				top : jQuery("#yourwriting").offset().top + 65,
+				width : jQuery("#yourwriting").outerWidth(),
+				height : jQuery("#yourwriting").outerHeight()
+			});
+
+			jQuery("#img-load").css({
+				top : (jQuery("#yourwriting").height() / 2),
+				left : (jQuery("#yourwriting").width() / 2)
+			});
+
 
 
 			var cleanAfterInsert = function () {
@@ -109,6 +121,7 @@ $def with (contentList, statistics)
 			}
 
 			var clean = function (content) {
+				jQuery("#overlay").fadeIn();
 				var text = jQuery("#yourwriting").clone().find('span').replaceWith(function() { return this.innerHTML; }).end().find('br').replaceWith(function() { return "\r\n"; }).end().html()
 				console.log(text)
 				jQuery('#yourwriting').html("")
@@ -142,7 +155,7 @@ $def with (contentList, statistics)
 							jQuery('#yourwriting').append(toInsert)
 						}
 					}
-
+					jQuery("#overlay").fadeOut();
 					cleanAfterInsert()
 				}, "json");
 			}
@@ -186,10 +199,14 @@ $def with (contentList, statistics)
 			<br>
 			<br>
 			<div id="yourwriting"></div>
+			<div id="overlay">
+				<img src="/static/ajax_loader.gif" id="img-load" height = "40" width = "40" />
+			</div>
 			<br>
 			<br>
 			<div id="wordcount"></div>
 			<div class="clear"></div>
+			
 			
 		</div>
 
