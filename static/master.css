@@ -51,6 +51,7 @@ label {
 	max-width: 780px;
 	background-color: #D3D3D3;
 	color: black;
+	line-height: 1.5;
 }
 
 #overlay {
