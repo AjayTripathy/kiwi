@@ -8,11 +8,15 @@ from nltk.stem import *
 import json
 import operator
 import couchdb
+import ast
+import httplib
 
 urls = (
 	'/', 'hello',
 	'/rev', 'revision',
-	'/test', 'tester')
+	'/test', 'tester', 
+        '/add',  'testAdd', 
+        '/save', 'testSave')
 
 app = web.application(urls, globals())
 render = web.template.render('templates/')
@@ -20,6 +24,49 @@ render = web.template.render('templates/')
 myform = web.form.Form(web.form.Textarea('content', rows=30, cols=80))
 
 couch = couchdb.Server()
+class testSave:
+  def GET(self):
+    i = web.input(userID=None, rawContent=None)
+    userID = str(i.userID)
+    rawContent = i.rawContent
+    parsedContentDict = parseContent(rawContent)
+    print parsedContentDict
+    saveContent(userID, rawContent, parsedContentDict)
+
+
+class testAdd:
+  def GET(self):
+    i = web.input(userID=None)
+    userID = str(i.userID)
+    addDbForUser(userID)
+
+def addDbForUser(userID):
+    db = couch.create(userID)
+    #Add all the design documents
+    path = "./couchdbviews/views"
+    dirList=os.listdir(path)
+    for fname in dirList:
+       pathToFile = path + "/" + fname
+       f = open(pathToFile, 'r')
+       rawString = f.read()
+       dictObj = ast.literal_eval(rawString)
+       designDocId = str(dictObj['_id'])
+       designDoc = json.dumps(dictObj)
+       print designDoc
+       relativePath = "/" + userID + "/" + designDocId
+       print relativePath
+       connection =  httplib.HTTPConnection('127.0.0.1:5984')
+       connection.request('PUT',relativePath , designDoc)
+       result = connection.getresponse()
+       print result.__dict__
+
+def saveContent(userID, rawContent, parsedContentDict):
+    print "saving"
+    db = couch[userID]
+    parsedContentDict['rawText'] = rawContent
+    doc = parsedContentDict
+    db.save(doc)
+
     
 def parseContent(content):
     tokens = WordPunctSpaceTokenizer().tokenize(content)
