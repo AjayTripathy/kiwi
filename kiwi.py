@@ -20,32 +20,6 @@ render = web.template.render('templates/')
 myform = web.form.Form(web.form.Textarea('content', rows=30, cols=80))
 
 couch = couchdb.Server()
-
-def addUserToCouch(userID):
-    db = couch.create(userID)
-    #Add all the design documents
-    path = "./couchdbviews/views"
-    dirList=os.listdir(path)
-    for fname in dirList:
-       f = open(argv, 'r')
-       rawString = f.read()
-       dictObj = ast.literal_eval(rawString)
-       designDocId = str(dictObj['_id'])
-       designDoc = json.dumps(dictObj)
-       print designDoc
-       relativePath = "/" + str(db) + "/" + designDocId
-       connection =  httplib.HTTPConnection('127.0.0.1:5984')
-       connection.request('PUT',relativePath , designDoc)
-       result = connection.getresponse() 
-       print result.__dict__
-
-def saveContent(userID, rawContent, parsedContentDict):
-    db = couch[userID]
-    parsedContentDict['rawText'] = rawContent
-    doc = parsedContentDict
-    db.save(doc)
-
-    
     
 def parseContent(content):
     tokens = WordPunctSpaceTokenizer().tokenize(content)
