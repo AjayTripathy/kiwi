@@ -5,3 +5,8 @@ html, body {
 body {
 	padding-top: 60px;
 }
+
+#info {
+	background-color: whiteSmoke;
+	display: none;
+}
