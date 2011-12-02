@@ -1,0 +1,11 @@
+html, body {
+	background-color: #eee;
+}
+
+body {
+	padding-top: 60px;
+}
+
+label {
+	display: none;
+}
