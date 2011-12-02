@@ -15,8 +15,9 @@ urls = (
 	'/', 'hello',
 	'/rev', 'revision',
 	'/test', 'tester', 
-        '/add',  'testAdd', 
-        '/save', 'testSave')
+    '/add',  'testAdd', 
+    '/save', 'testSave',
+    '/register', 'register')
 
 app = web.application(urls, globals())
 render = web.template.render('templates/')
@@ -24,6 +25,11 @@ render = web.template.render('templates/')
 myform = web.form.Form(web.form.Textarea('content', rows=10, cols=30))
 
 couch = couchdb.Server()
+
+class register:
+    def GET(self):
+        return render.register()
+
 class testSave:
   def GET(self):
     i = web.input(userID=None, rawContent=None)
