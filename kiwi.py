@@ -21,7 +21,7 @@ urls = (
 app = web.application(urls, globals())
 render = web.template.render('templates/')
 
-myform = web.form.Form(web.form.Textarea('content', rows=30, cols=80))
+myform = web.form.Form(web.form.Textarea('content', rows=10, cols=30))
 
 couch = couchdb.Server()
 class testSave:
