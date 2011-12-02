@@ -12,12 +12,12 @@ import ast
 import httplib
 
 urls = (
-	'/', 'hello',
+	'/', 'register',
 	'/rev', 'revision',
 	'/test', 'tester', 
     '/add',  'testAdd', 
     '/save', 'testSave',
-    '/register', 'register')
+    '/hello', 'hello')
 
 app = web.application(urls, globals())
 render = web.template.render('templates/')
