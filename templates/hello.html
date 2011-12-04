@@ -12,6 +12,10 @@ $def with (form)
 			jQuery(document).ready(function() {
 				jQuery("#content").css("width", 880)
 
+				toggleInfo = function () {
+					jQuery("#info").slideToggle()
+				}
+
 			});
 		</script>
 	</head>
@@ -22,15 +26,7 @@ $def with (form)
 				<div class="container">
 					<a class="brand" href="#">Write Better With Us</a>
 					<ul class="nav">
-						<li class="active"><a href="#">Home</a></li>
-						<li><a href="#about">About</a></li>
-						<li><a href="#contact">Contact</a></li>
-					</ul>
-					<form action="" class="pull-right">
-						<input class="input-small" type="text" placeholder="Username">
-						<input class="input-small" type="password" placeholder="Password">
-						<button class="btn" type="submit">Sign in</button>
-					</form>
+						<li class="active"><a href="/">Home</a></li>
 				</div>
 			</div>
 		</div>
@@ -39,7 +35,14 @@ $def with (form)
 			<div class="hero-unit">
 				<h1>Welcome!</h1>
 				<p>We'll get you writing better right away.</p>
-				<p><a class="btn primary large">Learn more &raquo;</a></p>
+				<p><a href="#" onclick="toggleInfo()" class="btn primary large">Learn more &raquo;</a></p>
+			</div>
+
+			<div class="row">
+				<div id="info" class="span-one-third offset-one-third">
+					<h3>So you wanted to learn more?</h3>
+					<p><span class="label notice">Notice</span> Everything's still under development, but go ahead and submit some text below.</p>
+				</div>
 			</div>
 
 			<div class="row">
@@ -66,32 +69,6 @@ $def with (form)
 
 	</body>
 </html>
-
-<!--
-<html>
-	<head>
-		<title> Post the text you want edited here!</title>
-		<link rel="stylesheet" type="text/css" href="static/master.css"/>
-		<link rel="shortcut icon" href="static/favicon.png" type="image/x-icon" />
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js" type="text/javascript"></script>
-		<link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
-	</head>
-
-	<body>
-		<div id="main">
-			<div id="logo"><img src="static/logo.png"></div>
-			<br>
-			<br>
-			<div id="inputform">
-			<form name="" method="POST"> 
-			$if not form.valid: <p>Sorry, your input was invalid.</p>
-			$:form.render()
-			<input type="submit" value="Edit Text" />
-			</form>
-			</div>
-			<div class="clear">
-		</div>
-	</body>
 </html>
 
 -->
