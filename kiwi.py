@@ -26,9 +26,16 @@ myform = web.form.Form(web.form.Textarea('content', rows=10, cols=30))
 
 couch = couchdb.Server()
 
+store = web.session.DiskStore('sessions')
+session = web.session.Session(app, store, initializer= {'loggedin' : 'false'})
+
 class register:
     def GET(self):
         return render.register()
+    
+    def POST(self):
+        print web.input()
+        return 'woo yeah'
 
 class testSave:
   def GET(self):
