@@ -5,6 +5,8 @@ import nltk
 from nltk import *
 from nltk.corpus import PlaintextCorpusReader
 from nltk.stem import *
+from nltk.corpus import cmudict
+from re import match
 import json
 import operator
 import couchdb
@@ -36,6 +38,7 @@ render = web.template.render('templates/')
 myform = web.form.Form(web.form.Textarea('content', rows=10, cols=30))
 
 couch = couchdb.Server()
+cmu = cmudict.dict()
 
 store = web.session.DiskStore('sessions')
 session = web.session.Session(app, store, initializer= {'loggedin' : 'false'})
@@ -135,7 +138,9 @@ def parseContent(content):
     stats = {}
     stats["label"] = ["frequency"]
     wordFreq = {}
-
+    totalSyllables = 0
+    totalWords = 0
+ 
     currentSentenceLength = 0
     index = 0
     for token in tokens:
@@ -150,6 +155,10 @@ def parseContent(content):
                 wordFreq[token] = 1
             else:
                 wordFreq[token] += 1
+
+        if token not in ['.',';',',',"'",":", "`","(",")", " "]:
+          totalSyllables = totalSyllables + syllableCount(token)
+          totalWords = totalWords + 1
 
         makeJson = {}
         makeJson['properties'] = {}
@@ -173,6 +182,8 @@ def parseContent(content):
         wrds.append(makeJson)
         index = index + 1
 
+    gradeLevel = FleshKincaid(totalWords, len(sentenceLengths), totalSyllables)
+    print gradeLevel
     sorted_x = sorted(wordFreq.iteritems(), key=operator.itemgetter(1))
     sorted_x.reverse()
     top5 = []
@@ -307,6 +318,32 @@ def DetectRepetitions(finder, tokens):
                                 indexesofrepetitions = indexesofrepetitions + [phraseindexes[i]]
                         i = i + 1
 	return indexesofrepetitions
+
+def FleshKincaid(totalWords, totalSentences, totalSyllables):
+  return int(0.39 * (totalWords / totalSentences) + 11.8 * (totalSyllables / totalWords) - 15.59)
+
+
+def syllableCount(word):
+  reduced = reduce(word)
+  if (not len(reduced)) or (not reduced in cmu):
+    return manual_syllable_count(reduced)
+  return len([x for x in list(''.join(list(cmu[reduced])[-1])) if match(r'\d', x)])
+
+def manual_syllable_count(word):
+  count = 0
+  prev = None
+  vowels = ['a', 'e', 'i', 'o', 'u']
+  for letter in word:
+    if ((prev not in vowels) and (letter in vowels)):
+      count = count + 1
+    prev = letter
+  return count
+
+def reduce(word):
+  return ''.join([x for x in word.lower() if match(r'\w', x)])
+
+
+
 if __name__ == "__main__":
 #	main(sys.argv[1])
 	app.run()
