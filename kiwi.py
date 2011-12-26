@@ -268,6 +268,16 @@ def DetectRepetitions(finder, tokens):
                         i = i + 1
 	return indexesofrepetitions
 
+def variance(lst):
+  total = 0
+  for ele in lst:
+    total = total + ele
+  mean = total/len(lst)
+  deviation = 0
+  for ele in lst:
+    deviation += (ele - mean) * (ele - mean)
+  return deviation/len(lst) 
+
 def FleshKincaid(totalWords, totalSentences, totalSyllables):
   return int(0.39 * (totalWords / totalSentences) + 11.8 * (totalSyllables / totalWords) - 15.59)
 
