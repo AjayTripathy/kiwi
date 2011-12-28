@@ -54,6 +54,7 @@ else:
 
 
 #returns True if you are authorized and False if you are not. I swear, this is secure. :<
+#It is, it's not as though you can access isAuth client-side 
 def isAuth(user, token):
     if user not in usersDB:
         print "user wasn't actually in database"
@@ -66,6 +67,31 @@ def isAuth(user, token):
             print "token failed"
             return False
 
+class save: 
+    def POST(self):
+      i = web.input
+      userID = str(i.username)
+      password = str(i.password)
+      title = str(i.title)
+      rawText = str(i.text)
+      if ( isAuth(userID, password) ):
+        saveContent(userID, title, rawText, parseContent(rawText))
+        return 'success'
+      else:
+        return 'failure'
+        
+class load:
+   def POST(self):
+     i = web.input
+     userID = str(i.username)
+     password = str(i.password)
+     title = str(i.title)
+     if ( isAuth(userID, password) ):
+       content = loadContent(userID, title)
+       return json.dumps(content[parsedContent])
+     else:
+       return 'failure'         
+      
 
 class register:
     def GET(self):
@@ -126,16 +152,16 @@ def saveContent(userID, title, rawContent, parsedContentDict):
     print "saving"
     userID = "user_" + userID
     db = couch[userID]
-    parsedContentDict['rawText'] = rawContent
-    doc = parsedContentDict
+    doc = { } 
+    doc['rawText'] = rawContent
+    doc['parsedContent'] = parsedContentDict
     db[title] = doc
 
 def loadContent(userID, title):
    userID = "user_" + userID
    db = couch[userID]
    doc = db[title]
-   parseContent(doc['rawText']) 
-
+   return doc 
     
 def parseContent(content):
     tokens = WordPunctSpaceTokenizer().tokenize(content)
