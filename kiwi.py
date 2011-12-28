@@ -81,8 +81,7 @@ class register:
             return 'already exists'
         else:
             usersDB[userID] = {'name' : userID, 'hashedPassword' : password}
-            documentStorageDb = "user_" + userID.lower()
-            addDbForUser(documentStorageDb)
+            addDbForUser(userID)
             return 'woo yeah'
         return 'wat'
 
@@ -103,6 +102,7 @@ class testAdd:
     addDbForUser(userID)
 
 def addDbForUser(userID):
+    userID = "user_" + userID
     db = couch.create(userID)
     #Add all the design documents
     path = "./couchdbviews/views"
@@ -122,12 +122,19 @@ def addDbForUser(userID):
        result = connection.getresponse()
        print result.__dict__
 
-def saveContent(userID, rawContent, parsedContentDict):
+def saveContent(userID, title, rawContent, parsedContentDict):
     print "saving"
+    userID = "user_" + userID
     db = couch[userID]
     parsedContentDict['rawText'] = rawContent
     doc = parsedContentDict
-    db.save(doc)
+    db[title] = doc
+
+def loadContent(userID, title):
+   userID = "user_" + userID
+   db = couch[userID]
+   doc = db[title]
+   parseContent(doc['rawText']) 
 
     
 def parseContent(content):
