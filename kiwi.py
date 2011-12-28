@@ -81,6 +81,8 @@ class register:
             return 'already exists'
         else:
             usersDB[userID] = {'name' : userID, 'hashedPassword' : password}
+            documentStorageDb = "user_" + userID.lower()
+            addDbForUser(documentStorageDb)
             return 'woo yeah'
         return 'wat'
 
