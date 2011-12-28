@@ -10,3 +10,7 @@ body {
 	background-color: whiteSmoke;
 	display: none;
 }
+
+#thanksdiv {
+	display: none;
+}

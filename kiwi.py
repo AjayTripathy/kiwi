@@ -12,12 +12,23 @@ import ast
 import httplib
 
 urls = (
-	'/', 'hello',
-	'/rev', 'revision',
-	'/test', 'tester', 
-    '/add',  'testAdd', 
+    '/', 'register',
+    '/start', 'hello',
+    '/rev', 'revision',
+    '/add', 'testAdd',
     '/save', 'testSave',
-    '/register', 'register')
+    '/register', 'register'
+    )
+
+
+#urls = (
+#	'/', 'hello',
+#	'/rev', 'revision',
+#	'/test', 'tester', 
+#    '/add',  'testAdd', 
+#    '/save', 'testSave',
+#    '/register', 'register',
+#    '/thanks', 'thanks')
 
 app = web.application(urls, globals())
 render = web.template.render('templates/')
@@ -29,13 +40,46 @@ couch = couchdb.Server()
 store = web.session.DiskStore('sessions')
 session = web.session.Session(app, store, initializer= {'loggedin' : 'false'})
 
+##Here is the Users database. It holds usernames along with (hashed) passwords.
+##Knowing whether or not they're logged in is done through cookies and isAuth.
+
+usersDB = None
+if ('users' not in couch):
+    usersDB = couch.create('users')
+else:
+    usersDB = couch['users']
+
+
+#returns True if you are authorized and False if you are not. I swear, this is secure. :<
+def isAuth(user, token):
+    if user not in usersDB:
+        print "user wasn't actually in database"
+        return False
+    else:
+        if (token == usersDB[user].hashedPassword):
+            print "token matched"
+            return True
+        else:
+            print "token failed"
+            return False
+
+
 class register:
     def GET(self):
-        return render.register()
+        return render.register(usersDB)
     
     def POST(self):
         print web.input()
-        return 'woo yeah'
+        i = web.input()
+        userID = str(i.username)
+        password = str(i.password)
+
+        if userID in usersDB:
+            return 'already exists'
+        else:
+            usersDB[userID] = {'name' : userID, 'hashedPassword' : password}
+            return 'woo yeah'
+        return 'wat'
 
 class testSave:
   def GET(self):
