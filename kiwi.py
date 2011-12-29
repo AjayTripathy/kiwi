@@ -116,9 +116,10 @@ class testSave:
     i = web.input(userID=None, rawContent=None)
     userID = str(i.userID)
     rawContent = i.rawContent
+    title = i.title
     parsedContentDict = parseContent(rawContent)
     print parsedContentDict
-    saveContent(userID, rawContent, parsedContentDict)
+    saveContent(userID, title, rawContent, parsedContentDict)
 
 
 class testAdd:
@@ -355,8 +356,10 @@ def DetectRepetitions(finder, tokens):
 	return indexesofrepetitions
 
 def FleshKincaid(totalWords, totalSentences, totalSyllables):
-  return int(0.39 * (totalWords / totalSentences) + 11.8 * (totalSyllables / totalWords) - 15.59)
-
+  if ( (not (totalWords == 0)) and (not (totalSentences == 0)) ):
+    return int(0.39 * (totalWords / totalSentences) + 11.8 * (totalSyllables / totalWords) - 15.59)
+  else:
+    return 0
 
 def syllableCount(word):
   reduced = reduce(word)
