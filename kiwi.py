@@ -120,7 +120,7 @@ class login:
         password = str(i.password)
 
         if userID in usersDB:
-            if usersDB[userID].hashedPassword == password:
+            if usersDB[userID]['hashedPassword'] == password:
                 return 'great'
             else:
                 return 'no match'
