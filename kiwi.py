@@ -55,6 +55,7 @@ else:
 
 
 #returns True if you are authorized and False if you are not. I swear, this is secure. :<
+#It is, it's not as though you can access isAuth client-side 
 def isAuth(user, token):
     if user not in usersDB:
         print "user wasn't actually in database"
@@ -67,6 +68,31 @@ def isAuth(user, token):
             print "token failed"
             return False
 
+class save: 
+    def POST(self):
+      i = web.input
+      userID = str(i.username)
+      password = str(i.password)
+      title = str(i.title)
+      rawText = str(i.text)
+      if ( isAuth(userID, password) ):
+        saveContent(userID, title, rawText, parseContent(rawText))
+        return 'success'
+      else:
+        return 'failure'
+        
+class load:
+   def POST(self):
+     i = web.input
+     userID = str(i.username)
+     password = str(i.password)
+     title = str(i.title)
+     if ( isAuth(userID, password) ):
+       content = loadContent(userID, title)
+       return json.dumps(content[parsedContent])
+     else:
+       return 'failure'         
+      
 
 class register:
     def GET(self):
@@ -82,6 +108,7 @@ class register:
             return 'already exists'
         else:
             usersDB[userID] = {'name' : userID, 'hashedPassword' : password}
+            addDbForUser(userID)
             return 'woo yeah'
         return 'wat'
 
@@ -108,9 +135,10 @@ class testSave:
     i = web.input(userID=None, rawContent=None)
     userID = str(i.userID)
     rawContent = i.rawContent
+    title = i.title
     parsedContentDict = parseContent(rawContent)
     print parsedContentDict
-    saveContent(userID, rawContent, parsedContentDict)
+    saveContent(userID, title, rawContent, parsedContentDict)
 
 
 class testAdd:
@@ -120,6 +148,7 @@ class testAdd:
     addDbForUser(userID)
 
 def addDbForUser(userID):
+    userID = "user_" + userID
     db = couch.create(userID)
     #Add all the design documents
     path = "./couchdbviews/views"
@@ -139,13 +168,20 @@ def addDbForUser(userID):
        result = connection.getresponse()
        print result.__dict__
 
-def saveContent(userID, rawContent, parsedContentDict):
+def saveContent(userID, title, rawContent, parsedContentDict):
     print "saving"
+    userID = "user_" + userID
     db = couch[userID]
-    parsedContentDict['rawText'] = rawContent
-    doc = parsedContentDict
-    db.save(doc)
+    doc = { } 
+    doc['rawText'] = rawContent
+    doc['parsedContent'] = parsedContentDict
+    db[title] = doc
 
+def loadContent(userID, title):
+   userID = "user_" + userID
+   db = couch[userID]
+   doc = db[title]
+   return doc 
     
 def parseContent(content):
     tokens = WordPunctSpaceTokenizer().tokenize(content)
@@ -339,8 +375,10 @@ def DetectRepetitions(finder, tokens):
 	return indexesofrepetitions
 
 def FleshKincaid(totalWords, totalSentences, totalSyllables):
-  return int(0.39 * (totalWords / totalSentences) + 11.8 * (totalSyllables / totalWords) - 15.59)
-
+  if ( (not (totalWords == 0)) and (not (totalSentences == 0)) ):
+    return int(0.39 * (totalWords / totalSentences) + 11.8 * (totalSyllables / totalWords) - 15.59)
+  else:
+    return 0
 
 def syllableCount(word):
   reduced = reduce(word)
