@@ -19,7 +19,8 @@ urls = (
     '/rev', 'revision',
     '/add', 'testAdd',
     '/save', 'testSave',
-    '/register', 'register'
+    '/register', 'register',
+    '/login', 'login'
     )
 
 
@@ -83,6 +84,24 @@ class register:
             usersDB[userID] = {'name' : userID, 'hashedPassword' : password}
             return 'woo yeah'
         return 'wat'
+
+class login:
+    def POST(self):
+        print web.input()
+        i = web.input()
+        userID = str(i.username)
+        password = str(i.password)
+
+        if userID in usersDB:
+            if usersDB[userID].hashedPassword == password:
+                return 'great'
+            else:
+                return 'no match'
+        else:
+            print "username not in DB"
+            return 'no match'
+
+        return 'watlol'
 
 class testSave:
   def GET(self):
