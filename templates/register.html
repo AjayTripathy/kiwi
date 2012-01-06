@@ -19,6 +19,23 @@ $def with (usersDB)
 					jQuery("#info").slideToggle()
 				}
 
+				//auto log in if you already have the cookie and you match
+				var cookie = jQuery.cookie('userinfo')
+				if (cookie != null) {
+					var userJSON = JSON.parse(cookie)
+					jQuery.post("/verify", {'username' : userJSON.username, 'token' : userJSON.password}, function (data) {
+						if (data == "verified") {
+							jQuery("#cookiediv").slideDown()
+							var t = setTimeout("redirectPage()", 2000);
+							redirectPage = function () {
+								window.location = "./start";
+							}
+						} else {
+							alert("your credentials are no good. please re log-in")
+						}
+					})
+				}
+
 				jQuery("#register").click(function () {
 					var hashedpassword = b64_sha1(jQuery("#password").val())
 
@@ -126,6 +143,14 @@ $def with (usersDB)
 			<div class="row" id="thankslogindiv">
 				<div class="span16">
 					<h2>Thanks for logging in!</h2> 
+
+					You will be redirected soon...
+				</div>
+			</div>
+
+			<div class="row" id="cookiediv">
+				<div class="span16">
+					<h2>You got a cookie!</h2> 
 
 					You will be redirected soon...
 				</div>

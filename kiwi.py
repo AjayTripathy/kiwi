@@ -20,7 +20,8 @@ urls = (
     '/add', 'testAdd',
     '/save', 'testSave',
     '/register', 'register',
-    '/login', 'login'
+    '/login', 'login',
+    '/verify', 'verify'
     )
 
 
@@ -54,6 +55,7 @@ else:
     usersDB = couch['users']
 
 
+
 #returns True if you are authorized and False if you are not. I swear, this is secure. :<
 #It is, it's not as though you can access isAuth client-side 
 def isAuth(user, token):
@@ -61,16 +63,26 @@ def isAuth(user, token):
         print "user wasn't actually in database"
         return False
     else:
-        if (token == usersDB[user].hashedPassword):
+        if (token == usersDB[user]['hashedPassword']):
             print "token matched"
             return True
         else:
             print "token failed"
             return False
+    
+class verify:
+    def POST(self):
+        i = web.input()
+        username = str(i.username)
+        token = str(i.token)
+        if (isAuth(username, token)):
+            return "verified"
+        else:
+            return "not verified"
 
 class save: 
     def POST(self):
-      i = web.input
+      i = web.input()
       userID = str(i.username)
       password = str(i.password)
       title = str(i.title)
@@ -83,7 +95,7 @@ class save:
         
 class load:
    def POST(self):
-     i = web.input
+     i = web.input()
      userID = str(i.username)
      password = str(i.password)
      title = str(i.title)
