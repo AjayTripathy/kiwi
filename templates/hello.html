@@ -52,6 +52,67 @@ $def with (form)
 				<div class="container">
 					<a class="brand" href="#">Write Better With Us</a>
 					<ul class="nav">
+						<li class="active"><a href="#">Home</a></li>
+						<li><a href="#about">About</a></li>
+						<li><a href="#contact">Contact</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<div class="sidebar">
+				<div class="well">
+					<h5>Sidebar</h5>
+					<ul>
+						<li><a href="#">Link 1</a></li>
+						<li><a href="#">Link 2</a></li>
+						<li><a href="#">Link 3</a></li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="content">
+				<div class="container">
+					<div class="hero-unit">
+						<h1>Welcome!</h1>
+						<p>We'll get you writing better right away.</p>
+						<p><a href="#" onclick="toggleInfo()" class="btn primary large">Learn more &raquo;</a></p>
+					</div>
+				</div>
+
+				<div class="row">
+					<div id="info" class="span-one-third offset-one-third">
+						<h3>So you wanted to learn more?</h3>
+						<p><span class="label notice">Notice</span> Everything's still under development, but go ahead and submit some text below. This demo app will detect repetitions in writing. Just paste your text in the box and click "edit text".</p>
+					</div>
+
+				<div class="row">
+					<div class="span16">
+						<h2>Text goes below.</h2>
+						<div class="clearfix" id="textform">
+							<form name="inputform" method="POST">
+								$if not form.valid: <p>Sorry, your input was invalid.</p>
+								$:form.render()
+								<input type="submit" value="Edit Text" />
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<footer>
+				<p>&copy; Ajay and Kevin 2011</p>
+				</footer>
+			</div>
+		</div>
+	</body>
+<!--
+	<body>
+		<div class="topbar">
+			<div class="fill">
+				<div class="container">
+					<a class="brand" href="#">Write Better With Us</a>
+					<ul class="nav">
 						<li class="active"><a href="/">Home</a></li>
 				</div>
 			</div>
@@ -89,12 +150,7 @@ $def with (form)
 				<p>&copy; Ajay and Kevin 2011</p>
 			</footer>
 		</div>
-
-
-
-
 	</body>
-</html>
-</html>
 
--->
+	-->
+</html>
