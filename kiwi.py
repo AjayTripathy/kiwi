@@ -18,7 +18,7 @@ urls = (
     '/start', 'hello',
     '/rev', 'revision',
     '/add', 'testAdd',
-    '/save', 'testSave',
+    '/save', 'save',
     '/register', 'register',
     '/login', 'login',
     '/verify', 'verify'
@@ -92,6 +92,17 @@ class save:
         return 'success'
       else:
         return 'failure'
+
+
+class testSave:
+  def GET(self):
+    i = web.input(userID=None, rawContent=None)
+    userID = str(i.userID)
+    rawContent = i.rawContent
+    title = i.title
+    parsedContentDict = parseContent(rawContent)
+    print parsedContentDict
+    saveContent(userID, title, rawContent, parsedContentDict)
         
 class load:
    def POST(self):
@@ -142,15 +153,6 @@ class login:
 
         return 'watlol'
 
-class testSave:
-  def GET(self):
-    i = web.input(userID=None, rawContent=None)
-    userID = str(i.userID)
-    rawContent = i.rawContent
-    title = i.title
-    parsedContentDict = parseContent(rawContent)
-    print parsedContentDict
-    saveContent(userID, title, rawContent, parsedContentDict)
 
 
 class testAdd:

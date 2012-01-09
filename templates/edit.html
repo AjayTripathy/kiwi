@@ -20,6 +20,23 @@ $def with (contentList, statistics)
 
 		<script type="text/javascript">
 		jQuery(document).ready(function() {
+			var cookie = jQuery.cookie('userinfo')
+			var userJSON = JSON.parse(cookie)
+			var usrname = userJSON.username
+			var pw = userJSON.password
+			jQuery("#savebutton").click(function () {
+				jQuery.post("/save", {"username" : usrname, "password" : pw, "title" : "Generic Title" , "text" : jQuery("#yourwriting").text()}, function (data) {
+						if (data == "success") {
+							alert("yay")
+						} else if (data == "failure") {
+							alert("nay")
+						} else {
+							alert("wtf happened")
+						}
+					})
+			});
+
+
 			var jsonarray = $:(contentList)
 			for (i in jsonarray) {
 				var jsonobj = jsonarray[i]
@@ -233,7 +250,7 @@ $def with (contentList, statistics)
 				<div class="well">
 					<h5>Sidebar</h5>
 					<ul>
-						<li><a href="#">Save Document</a></li>
+						<li><button class="btn" id="savebutton">Save</button></li>
 						<li><a href="#">Link 2</a></li>
 					</ul>
 				</div>
