@@ -25,7 +25,8 @@ $def with (contentList, statistics)
 			var usrname = userJSON.username
 			var pw = userJSON.password
 			jQuery("#savebutton").click(function () {
-				jQuery.post("/save", {"username" : usrname, "password" : pw, "title" : "Generic Title" , "text" : jQuery("#yourwriting").text()}, function (data) {
+				var name = prompt("Please enter the title","Friendship Letter 1");
+				jQuery.post("/save", {"username" : usrname, "password" : pw, "title" : name , "text" : jQuery("#yourwriting").text()}, function (data) {
 						if (data == "success") {
 							alert("yay")
 						} else if (data == "failure") {
