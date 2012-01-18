@@ -21,16 +21,26 @@ $def with (form)
 
 
 				var cookie = jQuery.cookie('userinfo')
+				var usrname = null
+				var pass = null
 
 				if (cookie == null) {
 					alert('no cookie found. unauthorized punk.')
 				} else {
 					var userJSON = JSON.parse(cookie)
+					usrname = userJSON.username
+					pass = userJSON.password
 					console.log(userJSON)
 					
 				}
 
-				jQuery("#docList").jqm();
+				jQuery("#docList").jqm({
+					onShow: function (hash) {
+						jQuery.post("/getAllDocs", {"username" : usrname, "password" : pass}, function (data) {
+								hash.w.text(data)
+								hash.w.css('opacity',0.88).show()});
+					}
+				});
 
 			});
 		</script>

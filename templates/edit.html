@@ -38,35 +38,44 @@ $def with (contentList, statistics)
 			});
 
 			jQuery("#loadbutton").click(function () {
-				alert("doesn't work yet but stay tuned :3")
-			})
+				var name = prompt("Please enter the title", "'GOTO' Considered Harmful");
+				jQuery.post("/load", {"username" : usrname, "password" : pw, "title" : name}, function (data) {
+					jQuery("#yourwriting").text("")
+					jQuery("#wordcount").html("")
+					displayText(data.text)
+					cleanAfterInsert()
+					displayStatistics(data.statistics)
+				}, "json")
+			});
 
 
-			var jsonarray = $:(contentList)
-			for (i in jsonarray) {
-				var jsonobj = jsonarray[i]
-				var jsonword = jsonobj.word
-				var isSpecialChar = jsonobj.specialChar
-				if (isSpecialChar == true) {
-					if (jsonobj.word == "space") {
-						jQuery('#yourwriting').append(" ")
-					} else if (jsonobj.word == "paragraphbreak") {
-						jQuery('#yourwriting').append("<br><br>")
-						//toInsert = "<span class = 'paragraphbreak'><br><br></span>"
-						//jQuery('#yourwriting').append(toInsert)
-					}
-				} else {
-					var isRepetition = jsonobj.properties.repetitions
-					var stem = jsonobj.properties.stem
-					var toInsert = ""
-					if (isRepetition) {
-						toInsert = "<span class = 'repetition' title='"+stem+"'>"+jsonword+"</span>"
+			var displayText = function (jsonarray) {
+				for (i in jsonarray) {
+					var jsonobj = jsonarray[i]
+					var jsonword = jsonobj.word
+					var isSpecialChar = jsonobj.specialChar
+					if (isSpecialChar == true) {
+						if (jsonobj.word == "space") {
+							jQuery('#yourwriting').append(" ")
+						} else if (jsonobj.word == "paragraphbreak") {
+							jQuery('#yourwriting').append("<br><br>")
+							//toInsert = "<span class = 'paragraphbreak'><br><br></span>"
+							//jQuery('#yourwriting').append(toInsert)
+						}
 					} else {
-						toInsert = "<span title='"+stem+"'>"+jsonword+"</span>"
+						var isRepetition = jsonobj.properties.repetitions
+						var stem = jsonobj.properties.stem
+						var toInsert = ""
+						if (isRepetition) {
+							toInsert = "<span class = 'repetition' title='"+stem+"'>"+jsonword+"</span>"
+						} else {
+							toInsert = "<span title='"+stem+"'>"+jsonword+"</span>"
+						}
+						jQuery('#yourwriting').append(toInsert)
 					}
-					jQuery('#yourwriting').append(toInsert)
 				}
 			}
+			displayText($:(contentList))
 
 			jQuery("#overlay").css({
 				opacity: 0.5,
@@ -192,26 +201,29 @@ $def with (contentList, statistics)
 
 			cleanAfterInsert()
 
-			var statisticsJSON = $:(statistics)
-			console.log(statisticsJSON)
-			var wordCount = statisticsJSON.wordCount
-			var barChart = new $$jit.BarChart({
-				injectInto: 'wordcount',
-				animate: true, 
-				orientation: 'vertical', 
-				barsOffset: 20,
-				Margin: {
-					top: 5,
-					left: 5,
-					right: 5,
-					bottom: 5
-				},
-				labelOffset: 5, 
-				type: 'stacked',
-				showAggregates: true,
-				showLabels: true, 
-			});
-			barChart.loadJSON(statisticsJSON)
+			var displayStatistics = function (statisticsJSON) {
+				var wordCount = statisticsJSON.wordCount
+				var barChart = new $$jit.BarChart({
+					injectInto: 'wordcount',
+					animate: true, 
+					orientation: 'vertical', 
+					barsOffset: 20,
+					Margin: {
+						top: 5,
+						left: 5,
+						right: 5,
+						bottom: 5
+					},
+					labelOffset: 5, 
+					type: 'stacked',
+					showAggregates: true,
+					showLabels: true, 
+				});
+				barChart.loadJSON(statisticsJSON)
+			}
+
+			displayStatistics($:(statistics))
+			
 			
 			
 	
