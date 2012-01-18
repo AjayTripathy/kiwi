@@ -20,7 +20,7 @@ urls = (
     '/save', 'save',
     '/register', 'register',
     '/login', 'login',
-    '/verify', 'verify'
+    '/verify', 'verify',
     '/getAllDocs', 'getDocs'
     )
 
