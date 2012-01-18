@@ -23,6 +23,7 @@ urls = (
     '/verify', 'verify',
     '/getAllDocs', 'getDocs',
     '/load' , 'load'
+    '/render', 'renderPage'
     )
 
 
@@ -145,7 +146,13 @@ class login:
 
         return 'watlol'
 
-
+class renderPage:
+  def POST(self):
+    i = web.input()
+    returnDict = i.parsedText
+    returnJson = json.dumps(returnDict['text'])
+    statistics = json.dumps(returnDict['statistics'])
+    return render.edit(returnJson, statistics)
 
 class testAdd:
   def GET(self):
