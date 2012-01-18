@@ -193,7 +193,8 @@ def docNames(userID):
    db = couch[userID]
    docs = [] 
    for title in db:
-     docs.append( {'title' : title} )
+     if not (title[:8] == '_design/' ):
+       docs.append( {'title' : title} )
    return docs
     
 def parseContent(content):
