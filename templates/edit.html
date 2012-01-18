@@ -37,6 +37,10 @@ $def with (contentList, statistics)
 					})
 			});
 
+			jQuery("#loadbutton").click(function () {
+				alert("doesn't work yet but stay tuned :3")
+			})
+
 
 			var jsonarray = $:(contentList)
 			for (i in jsonarray) {
@@ -252,7 +256,7 @@ $def with (contentList, statistics)
 					<h5>Sidebar</h5>
 					<ul>
 						<li><button class="btn" id="savebutton">Save</button></li>
-						<li><a href="#">Link 2</a></li>
+						<li><button class="btn" id="loadbutton">Load</button></li>
 					</ul>
 				</div>
 			</div>

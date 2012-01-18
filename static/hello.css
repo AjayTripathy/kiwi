@@ -3,6 +3,10 @@ html, body {
 	padding-top: 40px;
 }
 
+.container {
+	width: 920px;
+}
+
 .container > footer p {
 	text-align: center;
 }
