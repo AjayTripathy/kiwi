@@ -17,22 +17,14 @@ urls = (
     '/', 'register',
     '/start', 'hello',
     '/rev', 'revision',
-    '/add', 'testAdd',
     '/save', 'save',
     '/register', 'register',
     '/login', 'login',
     '/verify', 'verify'
+    '/getAllDocs', 'getDocs'
     )
 
 
-#urls = (
-#	'/', 'hello',
-#	'/rev', 'revision',
-#	'/test', 'tester', 
-#    '/add',  'testAdd', 
-#    '/save', 'testSave',
-#    '/register', 'register',
-#    '/thanks', 'thanks')
 
 app = web.application(urls, globals())
 render = web.template.render('templates/')
@@ -93,17 +85,6 @@ class save:
       else:
         return 'failure'
 
-
-class testSave:
-  def GET(self):
-    i = web.input(userID=None, rawContent=None)
-    userID = str(i.userID)
-    rawContent = i.rawContent
-    title = i.title
-    parsedContentDict = parseContent(rawContent)
-    print parsedContentDict
-    saveContent(userID, title, rawContent, parsedContentDict)
-        
 class load:
    def POST(self):
      i = web.input()
@@ -115,7 +96,17 @@ class load:
        return json.dumps(content[parsedContent])
      else:
        return 'failure'         
-      
+
+class getDocs:
+   def POST(self):
+     i = web.input()
+     userID = str(i.username)
+     password = str(i.password)
+     if (isAuth(userID, password)):
+       titles = docNames(userID)
+       return json.dumps(titles)
+     else:
+       return 'failure'       
 
 class register:
     def GET(self):
@@ -196,6 +187,14 @@ def loadContent(userID, title):
    db = couch[userID]
    doc = db[title]
    return doc 
+
+def docNames(userID):
+   userID = 'user_' + userID
+   db = couch[userID]
+   docs = [] 
+   for title in db:
+     docs.append( {'title' : title} )
+   return docs
     
 def parseContent(content):
     tokens = WordPunctSpaceTokenizer().tokenize(content)
