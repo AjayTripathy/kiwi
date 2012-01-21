@@ -67,7 +67,7 @@ def isAuth(user, token):
 class verify:
     def POST(self):
         i = web.input()
-        username = str(i.username)
+        username = str(i.username).lower()
         token = str(i.token)
         if (isAuth(username, token)):
             return "verified"
@@ -77,7 +77,7 @@ class verify:
 class save: 
     def POST(self):
       i = web.input()
-      userID = str(i.username)
+      userID = str(i.username).lower()
       password = str(i.password)
       title = str(i.title)
       rawText = str(i.text)
@@ -90,7 +90,7 @@ class save:
 class load:
    def POST(self):
      i = web.input()
-     userID = str(i.username)
+     userID = str(i.username).lower()
      password = str(i.password)
      title = str(i.title)
      if ( isAuth(userID, password) ):
@@ -102,7 +102,7 @@ class load:
 class getDocs:
    def POST(self):
      i = web.input()
-     userID = str(i.username)
+     userID = str(i.username).lower()
      password = str(i.password)
      if (isAuth(userID, password)):
        titles = docNames(userID)
@@ -117,7 +117,7 @@ class register:
     def POST(self):
         print web.input()
         i = web.input()
-        userID = str(i.username)
+        userID = str(i.username).lower()
         password = str(i.password)
 
         if userID in usersDB:
@@ -132,7 +132,7 @@ class login:
     def POST(self):
         print web.input()
         i = web.input()
-        userID = str(i.username)
+        userID = str(i.username).lower()
         password = str(i.password)
 
         if userID in usersDB:
