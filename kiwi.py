@@ -215,9 +215,10 @@ def parseContent(content):
     repetitions = DetectRepetitions(finder, tokens)
     stemmer = LancasterStemmer()
     wrds = []
+    stats = {} 
     sentenceLengths = []
-    stats = {}
-    stats["label"] = ["frequency"]
+    topWords = {}
+    topWords["label"] = ["frequency"]
     wordFreq = {}
     totalSyllables = 0
     totalWords = 0
@@ -277,8 +278,9 @@ def parseContent(content):
     for top in top5:
         dic = {"label" : top[0] ,"values" : [top[1]]}
         values.append(dic)
-    stats["values"] = values
+    topWords["values"] = values
     returnval = json.dumps({"text" : wrds})
+    stats['topWords'] = topWords
     return {"text": wrds , "statistics": stats}
 
 
