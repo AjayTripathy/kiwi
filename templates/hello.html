@@ -36,12 +36,10 @@ $def with (form)
 
 				jQuery("#loadbutton").click(function () {
 					var name = prompt("Please enter the title", "'GOTO' Considered Harmful");
-					jQuery.post("/load", {"username" : usrname, "password" : pass, "title" : "Friendship Letter 1"}, function (data) {
-						jQuery.post("/render", {"parsedText" : data}, function (data) {
-								console.log("/render info")
-								console.log(data);
-						});
-					});
+					jQuery.post("/load", {"username" : usrname, "password" : pass, "title" : name}, function (data) {
+						jQuery("#content").val(data.rawText);
+						jQuery("#submitbutton").click()
+					}, "json");
 				});
 				/*
 				jQuery("#docList").jqm({
@@ -144,7 +142,7 @@ $def with (form)
 							<form name="inputform" method="POST">
 								$if not form.valid: <p>Sorry, your input was invalid.</p>
 								$:form.render()
-								<input type="submit" value="Edit Text" />
+								<input type="submit" id="submitbutton" value="Edit Text" />
 							</form>
 						</div>
 					</div>
