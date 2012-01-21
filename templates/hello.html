@@ -34,6 +34,29 @@ $def with (form)
 					
 				}
 
+				jQuery("#loadbutton").click(function () {
+					var name = prompt("Please enter the title", "'GOTO' Considered Harmful");
+					jQuery.post("/load", {"username" : usrname, "password" : pass, "title" : "Friendship Letter 1"}, function (data) {
+						jQuery.post("/render", {"parsedText" : data}, function (data) {
+								console.log("/render info")
+								console.log(data);
+						});
+					});
+				});
+				/*
+				jQuery("#docList").jqm({
+					onShow: function (hash) {
+						jQuery.post("/load", {"username" : usrname, "password" : pass, "title" : "Friendship Letter 1"}, function (data) {
+							jQuery.post("/render", {"parsedText" : data}, function (data) {
+								console.log("/render info")
+								console.log(data)
+							})
+						});
+					}
+				});
+				*/
+
+				/*
 				jQuery("#docList").jqm({
 					onShow: function (hash) {
 						jQuery.post("/getAllDocs", {"username" : usrname, "password" : pass}, function (data) {
@@ -41,6 +64,8 @@ $def with (form)
 								hash.w.css('opacity',0.88).show()});
 					}
 				});
+
+				*/
 
 			});
 		</script>
@@ -80,7 +105,7 @@ $def with (form)
 					<h5>Quick Navigation</h5>
 					<ul>
 						<li><a href="#" class="jqModal">Load a previous document</a></li>
-						<li><a href="#">Link 2</a></li>
+						<li><button class="btn" id="loadbutton">Load</button></li>
 						<li><a href="#">Link 3</a></li>
 					</ul>
 				</div>

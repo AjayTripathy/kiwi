@@ -22,7 +22,7 @@ urls = (
     '/login', 'login',
     '/verify', 'verify',
     '/getAllDocs', 'getDocs',
-    '/load' , 'load'
+    '/load' , 'load',
     '/render', 'renderPage'
     )
 
@@ -149,7 +149,11 @@ class login:
 class renderPage:
   def POST(self):
     i = web.input()
-    returnDict = i.parsedText
+    form = myform()
+    form.validates()
+    returnDict = str(i.parsedText)
+    print "ok"
+    returnDict = json.loads(returnDict)
     returnJson = json.dumps(returnDict['text'])
     statistics = json.dumps(returnDict['statistics'])
     return render.edit(returnJson, statistics)
