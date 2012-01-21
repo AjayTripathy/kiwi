@@ -95,7 +95,7 @@ class load:
      title = str(i.title)
      if ( isAuth(userID, password) ):
        content = loadContent(userID, title)
-       return json.dumps(content['parsedContent'])
+       return json.dumps(content)
      else:
        return 'failure'         
 
