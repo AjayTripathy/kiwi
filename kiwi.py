@@ -281,6 +281,7 @@ def parseContent(content):
     topWords["values"] = values
     returnval = json.dumps({"text" : wrds})
     stats['topWords'] = topWords
+    stats['gradeLevel'] = {'gradeLevel' : gradeLevel}
     return {"text": wrds , "statistics": stats}
 
 
