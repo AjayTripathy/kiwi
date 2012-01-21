@@ -201,8 +201,8 @@ $def with (contentList, statistics)
 
 			cleanAfterInsert()
 
+			//actually more like just display topWords
 			var displayStatistics = function (statisticsJSON) {
-				var wordCount = statisticsJSON.wordCount
 				var barChart = new $$jit.BarChart({
 					injectInto: 'wordcount',
 					animate: true, 
@@ -219,7 +219,7 @@ $def with (contentList, statistics)
 					showAggregates: true,
 					showLabels: true, 
 				});
-				barChart.loadJSON(statisticsJSON)
+				barChart.loadJSON(statisticsJSON.topWords)
 			}
 
 			displayStatistics($:(statistics))
