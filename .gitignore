@@ -1,1 +1,9 @@
-kiwi.pyc
+.sass-cache
+.DS_Store
+*.py[co]
+*.sw[po]
+*.db
+*.log
+:*
+
+local_settings.py

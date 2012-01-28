@@ -5,7 +5,7 @@
 Easy installation
 -----------------
 
-Make sure you have pip! Then simply `sudo pip install -r requirements.txt`
+Make sure you have pip! Then run `fab setup`
 
 Kiwi requires NLTK and Web.py
 
