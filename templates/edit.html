@@ -44,7 +44,7 @@ $def with (contentList, statistics)
 					jQuery("#wordcount").html("")
 					displayText(data.text)
 					cleanAfterInsert()
-					displayStatistics(data.statistics)
+					displayTopWords(data.statistics)
 				}, "json")
 			});
 
@@ -201,8 +201,7 @@ $def with (contentList, statistics)
 
 			cleanAfterInsert()
 
-			//actually more like just display topWords
-			var displayStatistics = function (statisticsJSON) {
+			var displayTopWords = function (statisticsJSON) {
 				var barChart = new $$jit.BarChart({
 					injectInto: 'wordcount',
 					animate: true, 
@@ -220,9 +219,20 @@ $def with (contentList, statistics)
 					showLabels: true, 
 				});
 				barChart.loadJSON(statisticsJSON.topWords)
+
+				var gradeLevel = statisticsJSON.gradeLevel.gradeLevel
+				jQuery("#gradelevel").append(gradeLevel)
 			}
 
-			displayStatistics($:(statistics))
+			displayTopWords($:(statistics))
+
+
+			//generic display function that will display all the statistics on a JSON 
+			var displayStatistics = function (statisticJSON) {
+				
+			}
+
+
 			
 			
 			
@@ -284,6 +294,9 @@ $def with (contentList, statistics)
 						<br><span class="label important">Important</span> The top bar is currently not functional, as well as the sidebar.
 						<br>
 						<br>
+						<div id="gradelevel" class="span16">
+						Your grade level is: 
+						</div>
 						<div id="yourwriting" class="span16"></div>
 						<div id="overlay" class="span6">
 							<img src="/static/ajax_loader.gif" id="img-load" height = "40" width = "40" />

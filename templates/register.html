@@ -80,6 +80,12 @@ $def with (usersDB)
 					});
 				});
 
+				jQuery("#loginpassword").keydown(function (event) {
+					if (event.keyCode == '13') {
+						jQuery("#loginsubmit").click()
+					}
+				})
+
 
 			});
 		</script>
