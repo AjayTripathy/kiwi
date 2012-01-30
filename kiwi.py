@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import sys
 import web
 from web import form
@@ -51,7 +53,7 @@ else:
 
 
 #returns True if you are authorized and False if you are not. I swear, this is secure. :<
-#It is, it's not as though you can access isAuth client-side 
+#It is, it's not as though you can access isAuth client-side
 def isAuth(user, token):
     if user not in usersDB:
         print "user wasn't actually in database"
@@ -63,7 +65,7 @@ def isAuth(user, token):
         else:
             print "token failed"
             return False
-    
+
 class verify:
     def POST(self):
         i = web.input()
@@ -74,7 +76,7 @@ class verify:
         else:
             return "not verified"
 
-class save: 
+class save:
     def POST(self):
       i = web.input()
       userID = str(i.username).lower()
@@ -97,7 +99,7 @@ class load:
        content = loadContent(userID, title)
        return json.dumps(content)
      else:
-       return 'failure'         
+       return 'failure'
 
 class getDocs:
    def POST(self):
@@ -108,12 +110,12 @@ class getDocs:
        titles = docNames(userID)
        return json.dumps(titles)
      else:
-       return 'failure'       
+       return 'failure'
 
 class register:
     def GET(self):
         return render.register(usersDB)
-    
+
     def POST(self):
         print web.input()
         i = web.input()
@@ -189,7 +191,7 @@ def saveContent(userID, title, rawContent, parsedContentDict):
     print "saving"
     userID = "user_" + userID
     db = couch[userID]
-    doc = { } 
+    doc = { }
     doc['rawText'] = rawContent
     doc['parsedContent'] = parsedContentDict
     db[title] = doc
@@ -198,31 +200,31 @@ def loadContent(userID, title):
    userID = "user_" + userID
    db = couch[userID]
    doc = db[title]
-   return doc 
+   return doc
 
 def docNames(userID):
    userID = 'user_' + userID
    db = couch[userID]
-   docs = [] 
+   docs = []
    for title in db:
      if not (title[:8] == '_design/' ):
        docs.append( {'title' : title} )
    return docs
-    
+
 def parseContent(content):
     tokens = WordPunctSpaceTokenizer().tokenize(content)
     finder = ParseBigramCollocationsAndWords(tokens)
     repetitions = DetectRepetitions(finder, tokens)
     stemmer = LancasterStemmer()
     wrds = []
-    stats = {} 
+    stats = {}
     sentenceLengths = []
     topWords = {}
     topWords["label"] = ["frequency"]
     wordFreq = {}
     totalSyllables = 0
     totalWords = 0
- 
+
     currentSentenceLength = 0
     index = 0
     for token in tokens:
