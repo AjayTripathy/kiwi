@@ -282,8 +282,9 @@ def parseContent(content):
         values.append(dic)
     topWords["values"] = values
     returnval = json.dumps({"text" : wrds})
-    stats['topWords'] = {'json' : topWords , 'type': 'barGraph'}
-    stats['gradeLevel'] = {'json' : gradeLevel, 'type': 'word'}
+    stats['topWords'] = {'json' : topWords , 'type': 'barGraph', 'displayName': 'Top Five Words' }
+    stats['gradeLevel'] = {'json' : gradeLevel, 'type': 'word', 'displayName': 'Grade Level'}
+    stats['vocabBreadth'] = {'json' : len(wordFreq) , 'type': 'word', 'displayName': 'Vocabulary Breadth'}
     return {"text": wrds , "statistics": stats}
 
 
