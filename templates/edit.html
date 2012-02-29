@@ -24,6 +24,10 @@ $def with (contentList, statistics)
 			var userJSON = JSON.parse(cookie);
 			var usrname = userJSON.username;
 			var pw = userJSON.password;
+
+			console.log("woo")
+			console.log($:(statistics))
+
 			jQuery("#savebutton").click(function () {
 				var name = prompt("Please enter the title","Friendship Letter 1");
 				jQuery.post("/save", {"username" : usrname, "password" : pw, "title" : name , "text" : jQuery("#yourwriting").text()}, function (data) {
@@ -36,6 +40,8 @@ $def with (contentList, statistics)
 						}
 					})
 			});
+
+			/*///////// */
 
 			jQuery("#loadbutton").click(function () {
 				var name = prompt("Please enter the title", "'GOTO' Considered Harmful");
@@ -219,14 +225,13 @@ $def with (contentList, statistics)
 					showAggregates: true,
 					showLabels: true,
 				});
-				barChart.loadJSON(statisticsJSON.topWords)
+				barChart.loadJSON(statisticsJSON.topWords.json)
 
-				var gradeLevel = statisticsJSON.gradeLevel.gradeLevel
+				var gradeLevel = statisticsJSON.gradeLevel.json
 				jQuery("#gradelevel").append(gradeLevel)
 			}
 
 			displayTopWords($:(statistics))
-
 
 			//generic display function that will display all the statistics on a JSON 
 			var displayStatistics = function (statisticJSON) {
