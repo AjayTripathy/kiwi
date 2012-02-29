@@ -25,8 +25,8 @@ $def with (contentList, statistics)
 			var usrname = userJSON.username;
 			var pw = userJSON.password;
 
-			console.log("woo")
-			console.log($:(statistics))
+			//console.log("woo")
+			//console.log($:(statistics))
 
 			jQuery("#savebutton").click(function () {
 				var name = prompt("Please enter the title","Friendship Letter 1");
@@ -50,7 +50,7 @@ $def with (contentList, statistics)
 					jQuery("#wordcount").html("")
 					displayText(data.text)
 					cleanAfterInsert()
-					displayTopWords(data.statistics)
+					//displayTopWords(data.statistics)
 				}, "json")
 			});
 
@@ -208,9 +208,10 @@ $def with (contentList, statistics)
 
 			cleanAfterInsert()
 
+			/*
 			var displayTopWords = function (statisticsJSON) {
 				var barChart = new $$jit.BarChart({
-					injectInto: 'wordcount',
+					injectInto: 'topWords',
 					animate: true,
 					orientation: 'vertical',
 					barsOffset: 20,
@@ -231,14 +232,72 @@ $def with (contentList, statistics)
 				jQuery("#gradelevel").append(gradeLevel)
 			}
 
-			displayTopWords($:(statistics))
+			//displayTopWords($:(statistics))
+			*/
+			
+
+			var displayBarChart = function (statisticJSON, divName) {
+				//console.log("DISPLAYING BAR CHART")
+				var displayName = statisticJSON.displayName;
+				var toLoad = statisticJSON.json;
+				//console.log(displayName)
+				//console.log(toLoad)
+				//console.log(divName)
+				jQuery("#"+divName).css("width","940px");
+				jQuery("#"+divName).css("height","300px");
+				jQuery("#"+divName).css("background-color","#222");
+
+				var barChart = new $$jit.BarChart({
+					injectInto: divName,
+					animate: true,
+					orientation: 'vertical',
+					barsOffset: 20,
+					Margin: {
+						top: 5,
+						left: 5,
+						right: 5,
+						bottom: 5
+					},
+					labelOffset: 5,
+					type: 'stacked',
+					showAggregates: true,
+					showLabels: true,
+				});
+				barChart.loadJSON(toLoad)
+			}
+
+			//display a simple stat.
+			var displayWordStat = function (statisticJSON, divName) {
+				//console.log("DISPLAYING WORD STAT");
+				var displayName = statisticJSON.displayName;
+				var toLoad = statisticJSON.json;
+				//console.log(displayName)
+				//console.log(toLoad)
+				//console.log(divName)
+
+				jQuery("#"+divName).append(toLoad);
+			}
 
 			//generic display function that will display all the statistics on a JSON 
-			var displayStatistics = function (statisticJSON) {
-				
+			var displayStatistics = function (statisticsJSON) {
+				for (var stat in statisticsJSON) {
+					if (statisticsJSON.hasOwnProperty(stat)) {
+						var statJSON = statisticsJSON[stat];
+						var dataType = statJSON["type"]
+						if (dataType == "word") {
+							displayWordStat(statJSON,stat);
+						} else if (dataType == "barGraph") {
+							displayBarChart(statJSON,stat);
+						}
+
+					}
+				}
 			}
 
 			displayStatistics($:(statistics))
+
+			//display a bar chart. You should be given the name of the div.
+			
 		});
 
 		</script>
@@ -296,7 +355,7 @@ $def with (contentList, statistics)
 						<br><span class="label important">Important</span> The top bar is currently not functional, as well as the sidebar.
 						<br>
 						<br>
-						<div id="gradelevel" class="span16">
+						<div id="gradeLevel" class="span16">
 						Your grade level is: 
 						</div>
 						<div id="yourwriting" class="span16"></div>
@@ -305,7 +364,8 @@ $def with (contentList, statistics)
 						</div>
 						<br>
 						<br>
-						<div id="wordcount"></div>
+						<div id="topWords"></div>
+						<div id="vocabBreadth">Your vocabulary breadth is: </div>
 						<div class="clear"></div>
 					</div>
 				</div>
