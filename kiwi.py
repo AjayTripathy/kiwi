@@ -25,7 +25,8 @@ urls = (
     '/verify', 'verify',
     '/getAllDocs', 'getDocs',
     '/load' , 'load',
-    '/render', 'renderPage'
+    '/render', 'renderPage',
+    '/contact', 'contact'
     )
 
 
@@ -129,6 +130,10 @@ class register:
             addDbForUser(userID)
             return 'woo yeah'
         return 'wat'
+
+class contact:
+  def GET(self):
+    return render.contact()
 
 class login:
     def POST(self):
