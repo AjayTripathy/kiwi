@@ -1,4 +1,4 @@
-#!/usr/bin/python
+
 
 import sys
 import web
@@ -14,6 +14,7 @@ import operator
 import couchdb
 import ast
 import httplib
+import math
 
 urls = (
     '/', 'register',
@@ -348,9 +349,9 @@ class ParseBigramCollocationsAndWords(BigramCollocationFinder):
                     continue
             '''
             if index == 0:
-                if not w1 in ['the','s','.',';',',',"'",":", "`","(",")", "`", '"', " " ]:
+                if not w1 in ['s','.',';',',',"'",":", "`","(",")", "`", '"', " " ]:
                     cls.PhrasesIndexes[w1] = [0]
-                    cls.StemmedPhrasesIndexes[stemmer.stem(w1)] = [0]
+                    cls.StemmedPhrasesIndexes[stemmer.stem(w1)] = ([0] , [w1])
             wfd.inc(w1)
             try:
                 w2 = window[1]
@@ -364,11 +365,12 @@ class ParseBigramCollocationsAndWords(BigramCollocationFinder):
                     cls.PhrasesIndexes[w2].append(index + 1)
 
                 stemmedw2 = stemmer.stem(w2)
-                if not stemmedw2 in ['the','s','.',';',',',"'",":", "`","(",")", "`", '"', " "]:
+                if not stemmedw2 in ['s','.',';',',',"'",":", "`","(",")", "`", '"', " "]:
                     if not cls.StemmedPhrasesIndexes.has_key(stemmedw2):
-                        cls.StemmedPhrasesIndexes[stemmedw2] = [index + 1]
+                        cls.StemmedPhrasesIndexes[stemmedw2] = ([index + 1] , [w2])
                     else:
-                        cls.StemmedPhrasesIndexes[stemmedw2].append(index + 1)
+                        cls.StemmedPhrasesIndexes[stemmedw2][0].append(index + 1)
+                        cls.StemmedPhrasesIndexes[stemmedw2][1].append(w2)
 
                 if not cls.PhrasesIndexes.has_key(w1 + " " + w2):
                     cls.PhrasesIndexes[w1 + " " + w2] = [index]
@@ -391,13 +393,34 @@ class ParseBigramCollocationsAndWords(BigramCollocationFinder):
 def DetectRepetitions(finder, tokens):
 	repetitions = []
 	indexesofrepetitions = []
+        wordIndexes = { }
+        import cPickle
+        wordOccurences = cPickle.load(open( "stemmedWords.p", "rb" ))
 	for phrase in finder.StemmedPhrasesIndexes:
-            if not phrase in ['the','s','.',';',',',"'",":", "`","(",")"] :
-                phraseindexes = finder.StemmedPhrasesIndexes[phrase]
+            if not phrase in ['s','.',';',',',"'",":", "`","(",")"] :
+                phraseindexes = finder.StemmedPhrasesIndexes[phrase][0]
+                originalPhrases = finder.StemmedPhrasesIndexes[phrase][1]
                 if len(phraseindexes) > 1:
+                    overallFrequency = wordOccurences.freq(phrase)
+                    print phrase + '~~~~~~~~~~~~~~~~~~~~~~~~~~'
+                    print 'overallFrequency:'
+                    print overallFrequency
+                    frequency = 0.0
+                    normalizedFrequency = 0.0
+                    if len(tokens) > 0:
+                      frequency = len(phraseindexes) / float(len(tokens))
+                    if overallFrequency > 0:
+                      normalizedFrequency = frequency/overallFrequency
+                    print 'normalized Frequency:'
+                    if normalizedFrequency > 0:
+                      print round(math.log(normalizedFrequency, 10))
+                    else:
+                      print 0
+
                     i = 1
                     while i < len(phraseindexes):
                         diff = phraseindexes[i] - phraseindexes[i - 1]
+                         
                         if diff < 250:
                             repetitions = repetitions +  [tokens[phraseindexes[i-1]] + " " +  tokens[phraseindexes[i]]]
                             if not phraseindexes[i-1] in indexesofrepetitions:
@@ -405,7 +428,7 @@ def DetectRepetitions(finder, tokens):
                             if not phraseindexes[i] in indexesofrepetitions:
                                 indexesofrepetitions = indexesofrepetitions + [phraseindexes[i]]
                         i = i + 1
-	return indexesofrepetitions
+        return indexesofrepetitions
 
 def variance(lst):
   total = 0
