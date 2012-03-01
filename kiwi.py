@@ -37,8 +37,6 @@ myform = web.form.Form(web.form.Textarea('content', rows=10, cols=30))
 
 couch = couchdb.Server()
 cmu = cmudict.dict()
-<<<<<<< HEAD
-=======
 
 store = web.session.DiskStore('sessions')
 session = web.session.Session(app, store, initializer= {'loggedin' : 'false'})
@@ -113,7 +111,6 @@ class getDocs:
        return json.dumps(titles)
      else:
        return 'failure'
->>>>>>> 711399c348eaf9ec3c692a1ed1f6a6b38a0efbe9
 
 class register:
     def GET(self):
@@ -227,11 +224,6 @@ def parseContent(content):
     wordFreq = {}
     totalSyllables = 0
     totalWords = 0
-<<<<<<< HEAD
- 
-=======
-
->>>>>>> 711399c348eaf9ec3c692a1ed1f6a6b38a0efbe9
     currentSentenceLength = 0
     index = 0
     for token in tokens:
@@ -415,7 +407,6 @@ def DetectRepetitions(finder, tokens):
                         i = i + 1
 	return indexesofrepetitions
 
-<<<<<<< HEAD
 def variance(lst):
   total = 0
   for ele in lst:
@@ -426,16 +417,12 @@ def variance(lst):
     deviation += (ele - mean) * (ele - mean)
   return deviation/len(lst) 
 
-def FleshKincaid(totalWords, totalSentences, totalSyllables):
-  return int(0.39 * (totalWords / totalSentences) + 11.8 * (totalSyllables / totalWords) - 15.59)
 
-=======
 def FleshKincaid(totalWords, totalSentences, totalSyllables):
   if ( (not (totalWords == 0)) and (not (totalSentences == 0)) ):
     return int(0.39 * (totalWords / totalSentences) + 11.8 * (totalSyllables / totalWords) - 15.59)
   else:
     return 0
->>>>>>> 711399c348eaf9ec3c692a1ed1f6a6b38a0efbe9
 
 def syllableCount(word):
   reduced = reduce(word)
