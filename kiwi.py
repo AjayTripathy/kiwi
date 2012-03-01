@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import sys
 import web
 from web import form
@@ -14,12 +16,19 @@ import ast
 import httplib
 
 urls = (
-	'/', 'hello',
-	'/rev', 'revision',
-	'/test', 'tester', 
-    '/add',  'testAdd', 
-    '/save', 'testSave',
-    '/register', 'register')
+    '/', 'register',
+    '/start', 'hello',
+    '/rev', 'revision',
+    '/save', 'save',
+    '/register', 'register',
+    '/login', 'login',
+    '/verify', 'verify',
+    '/getAllDocs', 'getDocs',
+    '/load' , 'load',
+    '/render', 'renderPage'
+    )
+
+
 
 app = web.application(urls, globals())
 render = web.template.render('templates/')
@@ -28,20 +37,131 @@ myform = web.form.Form(web.form.Textarea('content', rows=10, cols=30))
 
 couch = couchdb.Server()
 cmu = cmudict.dict()
+<<<<<<< HEAD
+=======
+
+store = web.session.DiskStore('sessions')
+session = web.session.Session(app, store, initializer= {'loggedin' : 'false'})
+
+##Here is the Users database. It holds usernames along with (hashed) passwords.
+##Knowing whether or not they're logged in is done through cookies and isAuth.
+
+usersDB = None
+if ('users' not in couch):
+    usersDB = couch.create('users')
+else:
+    usersDB = couch['users']
+
+
+
+#returns True if you are authorized and False if you are not. I swear, this is secure. :<
+#It is, it's not as though you can access isAuth client-side
+def isAuth(user, token):
+    if user not in usersDB:
+        print "user wasn't actually in database"
+        return False
+    else:
+        if (token == usersDB[user]['hashedPassword']):
+            print "token matched"
+            return True
+        else:
+            print "token failed"
+            return False
+
+class verify:
+    def POST(self):
+        i = web.input()
+        username = str(i.username).lower()
+        token = str(i.token)
+        if (isAuth(username, token)):
+            return "verified"
+        else:
+            return "not verified"
+
+class save:
+    def POST(self):
+      i = web.input()
+      userID = str(i.username).lower()
+      password = str(i.password)
+      title = str(i.title)
+      rawText = str(i.text)
+      if ( isAuth(userID, password) ):
+        saveContent(userID, title, rawText, parseContent(rawText))
+        return 'success'
+      else:
+        return 'failure'
+
+class load:
+   def POST(self):
+     i = web.input()
+     userID = str(i.username).lower()
+     password = str(i.password)
+     title = str(i.title)
+     if ( isAuth(userID, password) ):
+       content = loadContent(userID, title)
+       return json.dumps(content)
+     else:
+       return 'failure'
+
+class getDocs:
+   def POST(self):
+     i = web.input()
+     userID = str(i.username).lower()
+     password = str(i.password)
+     if (isAuth(userID, password)):
+       titles = docNames(userID)
+       return json.dumps(titles)
+     else:
+       return 'failure'
+>>>>>>> 711399c348eaf9ec3c692a1ed1f6a6b38a0efbe9
 
 class register:
     def GET(self):
-        return render.register()
+        return render.register(usersDB)
 
-class testSave:
-  def GET(self):
-    i = web.input(userID=None, rawContent=None)
-    userID = str(i.userID)
-    rawContent = i.rawContent
-    parsedContentDict = parseContent(rawContent)
-    print parsedContentDict
-    saveContent(userID, rawContent, parsedContentDict)
+    def POST(self):
+        print web.input()
+        i = web.input()
+        userID = str(i.username).lower()
+        password = str(i.password)
 
+        if userID in usersDB:
+            return 'already exists'
+        else:
+            usersDB[userID] = {'name' : userID, 'hashedPassword' : password}
+            addDbForUser(userID)
+            return 'woo yeah'
+        return 'wat'
+
+class login:
+    def POST(self):
+        print web.input()
+        i = web.input()
+        userID = str(i.username).lower()
+        password = str(i.password)
+
+        if userID in usersDB:
+            if usersDB[userID]['hashedPassword'] == password:
+                return 'great'
+            else:
+                return 'no match'
+        else:
+            print "username not in DB"
+            return 'no match'
+
+        return 'watlol'
+
+class renderPage:
+  def POST(self):
+    i = web.input()
+    form = myform()
+    form.validates()
+    returnDict = str(i.parsedText)
+    print "ok"
+    returnDict = json.loads(returnDict)
+    returnJson = json.dumps(returnDict['text'])
+    statistics = json.dumps(returnDict['statistics'])
+    return render.edit(returnJson, statistics)
 
 class testAdd:
   def GET(self):
@@ -50,6 +170,7 @@ class testAdd:
     addDbForUser(userID)
 
 def addDbForUser(userID):
+    userID = "user_" + userID
     db = couch.create(userID)
     #Add all the design documents
     path = "./couchdbviews/views"
@@ -69,27 +190,48 @@ def addDbForUser(userID):
        result = connection.getresponse()
        print result.__dict__
 
-def saveContent(userID, rawContent, parsedContentDict):
+def saveContent(userID, title, rawContent, parsedContentDict):
     print "saving"
+    userID = "user_" + userID
     db = couch[userID]
-    parsedContentDict['rawText'] = rawContent
-    doc = parsedContentDict
-    db.save(doc)
+    doc = { }
+    doc['rawText'] = rawContent
+    doc['parsedContent'] = parsedContentDict
+    db[title] = doc
 
-    
+def loadContent(userID, title):
+   userID = "user_" + userID
+   db = couch[userID]
+   doc = db[title]
+   return doc
+
+def docNames(userID):
+   userID = 'user_' + userID
+   db = couch[userID]
+   docs = []
+   for title in db:
+     if not (title[:8] == '_design/' ):
+       docs.append( {'title' : title} )
+   return docs
+
 def parseContent(content):
     tokens = WordPunctSpaceTokenizer().tokenize(content)
     finder = ParseBigramCollocationsAndWords(tokens)
     repetitions = DetectRepetitions(finder, tokens)
     stemmer = LancasterStemmer()
     wrds = []
-    sentenceLengths = []
     stats = {}
-    stats["label"] = ["frequency"]
+    sentenceLengths = []
+    topWords = {}
+    topWords["label"] = ["frequency"]
     wordFreq = {}
     totalSyllables = 0
     totalWords = 0
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> 711399c348eaf9ec3c692a1ed1f6a6b38a0efbe9
     currentSentenceLength = 0
     index = 0
     for token in tokens:
@@ -145,8 +287,13 @@ def parseContent(content):
     for top in top5:
         dic = {"label" : top[0] ,"values" : [top[1]]}
         values.append(dic)
-    stats["values"] = values
+    topWords["values"] = values
     returnval = json.dumps({"text" : wrds})
+
+    stats['topWords'] = {'json' : topWords , 'type': 'barGraph', 'displayName': 'Top Five Words' }
+    stats['gradeLevel'] = {'json' : gradeLevel, 'type': 'word', 'displayName': 'Grade Level'}
+    stats['vocabBreadth'] = {'json' : len(wordFreq) , 'type': 'word', 'displayName': 'Vocabulary Breadth'}
+    
     return {"text": wrds , "statistics": stats}
 
 
@@ -268,6 +415,7 @@ def DetectRepetitions(finder, tokens):
                         i = i + 1
 	return indexesofrepetitions
 
+<<<<<<< HEAD
 def variance(lst):
   total = 0
   for ele in lst:
@@ -281,6 +429,13 @@ def variance(lst):
 def FleshKincaid(totalWords, totalSentences, totalSyllables):
   return int(0.39 * (totalWords / totalSentences) + 11.8 * (totalSyllables / totalWords) - 15.59)
 
+=======
+def FleshKincaid(totalWords, totalSentences, totalSyllables):
+  if ( (not (totalWords == 0)) and (not (totalSentences == 0)) ):
+    return int(0.39 * (totalWords / totalSentences) + 11.8 * (totalSyllables / totalWords) - 15.59)
+  else:
+    return 0
+>>>>>>> 711399c348eaf9ec3c692a1ed1f6a6b38a0efbe9
 
 def syllableCount(word):
   reduced = reduce(word)

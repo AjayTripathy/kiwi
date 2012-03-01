@@ -1,20 +1,107 @@
+$def with (usersDB)
+
 <html>
 	<head>
 		<title>Kiwis, man.</title>
 		<link rel="stylesheet" type="text/css" href="static/register.css"/>
 		<link rel="shortcut icon" href="static/favicon.png" type-"image/x-icon" />
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js" type="text/javascript"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 		<link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+		<script type="text/javascript" src="static/jshash-2.2/sha1.js"></script>
+		<script type="text/javascript" src="static/jquery.cookie.js"></script>
 
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
+
 				jQuery("#content").css("width", 880);
 
 				toggleInfo = function () {
 					jQuery("#info").slideToggle()
 				}
 
+				//auto log in if you already have the cookie and you match
+				var cookie = jQuery.cookie('userinfo')
+				if (cookie != null) {
+					var userJSON = JSON.parse(cookie)
+					jQuery.post("/verify", {'username' : userJSON.username, 'token' : userJSON.password}, function (data) {
+						if (data == "verified") {
+							jQuery("#cookiediv").slideDown()
+							var t = setTimeout("redirectPage()", 2000);
+							redirectPage = function () {
+								window.location = "./start";
+							}
+						} else {
+							alert("your credentials are no good. please re log-in")
+						}
+					})
+				}
+
+				jQuery("#register").click(function () {
+					var hashedpassword = b64_sha1(jQuery("#password").val())
+
+					jQuery.post("/register", {username: jQuery("#username").val(), password: hashedpassword}, function (data) {
+						if (data == "already exists") {
+							alert('Your username has already been taken. Sorry!');
+						} else if (data == "woo yeah") {
+							jQuery("#registerdiv").slideUp()
+							jQuery("#thanksdiv").slideDown()
+							var jsonText = JSON.stringify({username: jQuery("#username").val(), password: hashedpassword})
+							jQuery.cookie('userinfo',jsonText);
+							var t = setTimeout("redirectPage()",2000);
+
+							redirectPage = function () {
+								window.location = "./start";
+							}
+						} else {
+							alert('wtf')
+						}
+					});
+				});
+
+				jQuery("#loginsubmit").click(function () {
+					var hashedpassword = b64_sha1(jQuery("#loginpassword").val());
+
+					jQuery.post("/login", {username: jQuery("#loginusername").val(), password: hashedpassword}, function (data) {
+						if (data == "great") {
+							jQuery("#thankslogindiv").slideDown()
+							var jsonText = JSON.stringify({username: jQuery("#loginusername").val(), password: hashedpassword})
+							jQuery.cookie('userinfo', jsonText);
+							var t = setTimeout("redirectPage()",2000);
+
+							redirectPage = function () {
+								window.location = "./start";
+							}
+						} else if (data == "no match") {
+							alert("Sorry, your credentials suck");
+							jQuery("#loginusername").select()
+						} else {
+							alert('wtf')
+						}
+					});
+				});
+
+				jQuery("#loginpassword").keydown(function (event) {
+					if (event.keyCode == '13') {
+						jQuery("#loginsubmit").click()
+					}
+				})
+
+
 			});
+		</script>
+
+		<script type="text/javascript">
+
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-27841981-1']);
+		  _gaq.push(['_trackPageview']);
+
+		  (function() {
+		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+
 		</script>
 	</head>
 
@@ -28,11 +115,11 @@
 						<li><a href="#about">About</a></li>
 						<li><a href="#contact">Contact</a></li>
 					</ul>
-					<form action="" class="pull-right">
-						<input class="input-small" type="text" placeholder="Username">
-						<input class="input-small" type="password" placeholder="Password">
-						<button class="btn" type="submit">Sign in</button>
-					</form>
+					<div id="logindiv">
+						<input class="input-small" type="text" placeholder="Username" id="loginusername">
+						<input class="input-small" type="password" placeholder="Password" id="loginpassword">
+						<button class="btn" type="submit" id="loginsubmit">Sign in</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -51,34 +138,61 @@
 				</div>
 			</div>
 
-			<div class="row">
+			<div class="row" id="thanksdiv">
 				<div class="span16">
-					<h2>Please register!</h2>
-					<form>
-						<fieldset>
-							<legend>Example form legend</legend>
-							<div class="clearfix">
-								<label for="username">Username</label>
-								<div class="input">
-									<input class="xlarge" id="username" name="username" size="30" type="text">
-								</div>
-							</div>
-							<div class="clearfix">
-								<label for="password">Password</label>
-								<div class="input">
-									<input class="xlarge" id="password" name="password" size="20" type="password">
-								</div>
-							</div>
-							<div class="clear"></div>
-							<div class="actions">
-								<input type="submit" class="btn primary" value="Register">
-							</div>
-						</fieldset>
-					</form>
+					<h2>Thanks for registering!</h2>
+
+					You will be redirected soon...
 				</div>
 			</div>
 
-			
+			<div class="row" id="thankslogindiv">
+				<div class="span16">
+					<h2>Thanks for logging in!</h2>
+
+					You will be redirected soon...
+				</div>
+			</div>
+
+			<div class="row" id="cookiediv">
+				<div class="span16">
+					<h2>You got a cookie!</h2>
+
+					You will be redirected soon...
+				</div>
+			</div>
+
+			<div class="row" id="registerdiv">
+				<div class="span16">
+					<h2>Please register!</h2>
+					<div class="clearfix">
+						<label for="username">Username</label>
+						<div class="input">
+							<input class="xlarge" id="username" name="username" size="30" type="text">
+						</div>
+					</div>
+					<br>
+					<div class="clearfix">
+						<label for="password">Password</label>
+						<div class="input">
+							<input class="xlarge" id="password" name="password" size="20" type="password">
+						</div>
+					</div>
+					<br>
+					<div class="clearfix">
+						<label for="password">E-mail</label>
+						<div class="input">
+							<input class="xlarge" id="email" name="email" size="20" type="email">
+						</div>
+					</div>
+					<div class="clear"></div>
+					<div class="actions">
+						<input type="submit" id="register" class="btn primary" value="Register">
+					</div>
+				</div>
+			</div>
+
+
 			<footer>
 				<p>&copy; Ajay and Kevin 2011</p>
 			</footer>
