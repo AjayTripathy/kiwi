@@ -249,7 +249,7 @@ $def with (contentList, statistics)
 				jQuery("#"+divName).css("background-color","#222");
 				//jQuery("#statmenu").append(displayName);
 				//jQuery("#statmenu").append("<a href='#' onclick='displayRelevantStatistic("+divName+")'>"+displayName+"</a>")
-				jQuery("#statmenu").append("<a href='#' id='"+divName+"Controller"+"'>"+displayName+"</a> ")
+				jQuery("#statmenu").append("<a href='#' class='btn' id='"+divName+"Controller"+"'>"+displayName+"</a> ")
 				jQuery("#"+divName+"Controller").click(function () {
 					toggleStatistic(divName)
 				});
@@ -279,7 +279,7 @@ $def with (contentList, statistics)
 				var displayName = statisticJSON.displayName;
 				var toLoad = statisticJSON.json;
 				//jQuery("#statmenu").append(displayName);
-				jQuery("#statmenu").append("<a href='#' id='"+divName+"Controller"+"'>"+displayName+"</a> ")
+				jQuery("#statmenu").append("<a href='#' class='btn' id='"+divName+"Controller"+"'>"+displayName+"</a> ")
 				jQuery("#"+divName+"Controller").click(function () {
 					toggleStatistic(divName)
 				})
@@ -378,10 +378,12 @@ $def with (contentList, statistics)
 						</div>
 					</div>
 				</div>
+				<br>
 				<div class="row">
 					<div class="span16" id="statmenu">
 					</div>
 				</div>
+				<br>
 				<div class="row">
 					<div class="span16" id="statistics">
 					</div>
