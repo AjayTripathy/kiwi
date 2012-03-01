@@ -44,3 +44,12 @@ label {
 #info {
 	background-color: whiteSmoke;
 }
+
+#displayusername {
+	padding: 10px;
+	color: #FFFFFF;
+}
+
+#logoutsubmit {
+	padding: 10px;
+}

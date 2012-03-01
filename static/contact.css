@@ -9,3 +9,12 @@ body {
 #logoutdiv {
 	display: none;
 }
+
+#logoutsubmit {
+	padding: 10px;
+}
+
+#displayusername {
+	color: #FFFFFF;
+	padding: 10px;
+}

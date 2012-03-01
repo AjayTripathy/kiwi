@@ -17,7 +17,7 @@
 					jQuery.post("/verify", {'username' : userJSON.username, 'token' : userJSON.password}, function (data) {
 						if (data == "verified") {
 							jQuery("#logindiv").css("display","none");
-							jQuery("#displayusername").text("");
+							//jQuery("#displayusername").text("");
 							jQuery("#displayusername").text("Hello, "+userJSON.username)
 							jQuery("#logoutdiv").css("display","inline");
 						} else {
