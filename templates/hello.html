@@ -2,7 +2,7 @@ $def with (form)
 
 <html>
 	<head>
-		<title>Post the text you want edited here!</title>
+		<title>Ready to Analyze</title>
 		<link rel="shortcut icon" href="static/favicon.png" type-"image/x-icon" />
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
@@ -139,7 +139,7 @@ $def with (form)
 							<form name="inputform" method="POST">
 								$if not form.valid: <p>Sorry, your input was invalid.</p>
 								$:form.render()
-								<input type="submit" id="submitbutton" value="Edit Text" />
+								<input type="submit" id="submitbutton" value="Analyze Text" />
 							</form>
 						</div>
 					</div>
