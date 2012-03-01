@@ -34,7 +34,6 @@ $def with (form)
 					pass = userJSON.password
 					username = userJSON.username
 					password = userJSON.password
-
 				}
 
 				jQuery("#loadbutton").click(function () {
@@ -46,7 +45,6 @@ $def with (form)
 				});
 
 				var loadDocument = function (name) {
-					console.log("LOLO")
 					jQuery.post("/load", {"username" : username, "password" : password, "title" : name}, function (data) {
 						jQuery("#content").val(data.rawText);
 						jQuery("#submitbutton").click()
@@ -70,6 +68,8 @@ $def with (form)
 							jQuery("#documentList").append(link);
 						}
 				}, "json");
+
+				jQuery("#displayusername").text("Hello, "+usrname);
 
 			});
 		</script>
@@ -98,6 +98,12 @@ $def with (form)
 						<li class="active"><a href="#">Home</a></li>
 						<li><a href="/contact">Contact</a></li>
 					</ul>
+					<div id="logoutdiv" class='pull-right'>
+						<ul class="nav">
+							<li><div id="displayusername">FILL ME IN</div></li>
+						</ul>
+						<button class="btn" type="submit" id="logoutsubmit">Logout</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -106,17 +112,6 @@ $def with (form)
 			<div class="sidebar">
 				<div class="well">
 					<h5>Quick Navigation</h5>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="span16">
-					<div class="jqmWindow" id="docList">
-						<a href="#" class="jqmClose">Close</a>
-						<hr>
-						<em>woo</em>
-						<br>This is pretty cool
-					</div>
 				</div>
 			</div>
 
