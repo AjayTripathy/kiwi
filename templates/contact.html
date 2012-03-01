@@ -10,9 +10,24 @@
 
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
-
+				//this checks whether or not you're logged in and replaces the log-in bar if necessary.
+				var cookie = jQuery.cookie('userinfo')
+				if (cookie != null) {
+					var userJSON = JSON.parse(cookie)
+					jQuery.post("/verify", {'username' : userJSON.username, 'token' : userJSON.password}, function (data) {
+						if (data == "verified") {
+							jQuery("#logindiv").css("display","none");
+							jQuery("#displayusername").text("");
+							jQuery("#displayusername").text("Hello, "+userJSON.username)
+							jQuery("#logoutdiv").css("display","inline");
+						} else {
+							alert("Your credentials are messed up for some reason. DESTROY YOUR COOKIES.")
+						}
+					})
+				}
 			});
 		</script>
+
 
 		<script type="text/javascript">
 
@@ -43,6 +58,12 @@
 						<input class="input-small" type="password" placeholder="Password" id="loginpassword">
 						<button class="btn" type="submit" id="loginsubmit">Sign in</button>
 					</div>
+					<div id="logoutdiv" class='pull-right'>
+						<ul class="nav">
+							<li><div id="displayusername"></div></li>
+						</ul>
+						<button class="btn" type="submit" id="logoutsubmit">Logout</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -55,11 +76,14 @@
 					<div class="row show-grid" id="people">
 						<div class="span6">
 							<h2>Ajay Tripathy</h2>
-							<p>He is the dude who built this thing originally. Pretty cool, don't you think?</p>
+							<p><img src="http://placekitten.com/100/100"></p>
+							<p>Actually is a cat.</p>
 						</div>
 						<div class="span6">
 							<h2>Kevin Hwang</h2>
-							<p>He is another dude. He came along for the ride after.</p>
+							<p><img src="static/kevin.png"></p>
+							<p>A third-year student at the University of California, Berkeley.</p>
+							<p><a href="http://www.kevinhwang.net" target="_blank">Personal Website</a></p>
 						</div>
 					</div>
 				</div>
