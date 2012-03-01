@@ -78,3 +78,11 @@ label {
 #img-load {
 	position: absolute;
 }
+
+#displayusername {
+	padding: 10px;
+}
+
+#logoutsubmit {
+	padding: 10px;
+}
