@@ -12,6 +12,8 @@ $def with (form)
 		<link rel="stylesheet" type="text/css" href="static/hello.css"/>
 		<link rel="stylesheet" type="text/css" href="static/jqModal.css"/>
 		<script type="text/javascript">
+			var username = null
+			var password = null
 			jQuery(document).ready(function() {
 				jQuery("#content").css("width", 880)
 
@@ -30,7 +32,8 @@ $def with (form)
 					var userJSON = JSON.parse(cookie)
 					usrname = userJSON.username
 					pass = userJSON.password
-					console.log(userJSON)
+					username = userJSON.username
+					password = userJSON.password
 
 				}
 
@@ -41,29 +44,32 @@ $def with (form)
 						jQuery("#submitbutton").click()
 					}, "json");
 				});
-				/*
-				jQuery("#docList").jqm({
-					onShow: function (hash) {
-						jQuery.post("/load", {"username" : usrname, "password" : pass, "title" : "Friendship Letter 1"}, function (data) {
-							jQuery.post("/render", {"parsedText" : data}, function (data) {
-								console.log("/render info")
-								console.log(data)
-							})
-						});
-					}
-				});
-				*/
 
-				/*
-				jQuery("#docList").jqm({
-					onShow: function (hash) {
-						jQuery.post("/getAllDocs", {"username" : usrname, "password" : pass}, function (data) {
-								hash.w.text(data)
-								hash.w.css('opacity',0.88).show()});
-					}
-				});
+				var loadDocument = function (name) {
+					console.log("LOLO")
+					jQuery.post("/load", {"username" : username, "password" : password, "title" : name}, function (data) {
+						jQuery("#content").val(data.rawText);
+						jQuery("#submitbutton").click()
+					}, "json");
+				}
 
-				*/
+				jQuery.post("/getAllDocs", {"username" : usrname, "password" : pass}, function (data) {
+						console.log(data);
+						jQuery("#documentList").text("")
+						for (var doc in data) {
+							var json = data[doc]
+							var title = json.title
+							//jQuery("#documentList").append(title)
+							var link = document.createElement("a");
+							link.setAttribute("href", "#");
+							link.innerHTML = title;
+							link.onclick = function () {
+								loadDocument(title)
+							}
+							//jQuery("#documentList").append("<a href='#' onclick=loadDocument("+title+")>"+title+"</a>");
+							jQuery("#documentList").append(link);
+						}
+				}, "json");
 
 			});
 		</script>
@@ -118,19 +124,23 @@ $def with (form)
 			</div>
 
 			<div class="content">
-				<div class="container">
-					<div class="hero-unit">
-						<h1>Welcome!</h1>
-						<p>We'll get you writing better right away.</p>
-						<p><a href="#" onclick="toggleInfo()" class="btn primary large">Learn more &raquo;</a></p>
-					</div>
-				</div>
 
 				<div class="row">
 					<div id="info" class="span-one-third offset-one-third">
 						<h3>So you wanted to learn more?</h3>
 						<p><span class="label notice">Notice</span> Everything's still under development, but go ahead and submit some text below. This demo app will detect repetitions in writing. Just paste your text in the box and click "edit text".</p>
 					</div>
+
+				<div class="row">
+					<div class="span16" id="docListContainer">
+						<h3>List of documents you have</h3>
+					</div>
+				</div>
+						
+				<div class="row">
+					<div class="span16" id="documentList">
+					</div>
+				</div>
 
 				<div class="row">
 					<div class="span16">
@@ -151,51 +161,4 @@ $def with (form)
 			</div>
 		</div>
 	</body>
-<!--
-	<body>
-		<div class="topbar">
-			<div class="fill">
-				<div class="container">
-					<a class="brand" href="#">Write Better With Us</a>
-					<ul class="nav">
-						<li class="active"><a href="/">Home</a></li>
-				</div>
-			</div>
-		</div>
-
-		<div class="container">
-			<div class="hero-unit">
-				<h1>Welcome!</h1>
-				<p>We'll get you writing better right away.</p>
-				<p><a href="#" onclick="toggleInfo()" class="btn primary large">Learn more &raquo;</a></p>
-			</div>
-
-			<div class="row">
-				<div id="info" class="span-one-third offset-one-third">
-					<h3>So you wanted to learn more?</h3>
-					<p><span class="label notice">Notice</span> Everything's still under development, but go ahead and submit some text below. This demo app will detect repetitions in writing. Just paste your text in the box and click "edit text".</p>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="span16">
-					<h2>Text goes below.</h2>
-					<div class="clearfix" id="textform">
-						<form name="inputform" method="POST">
-							$if not form.valid: <p>Sorry, your input was invalid.</p>
-							$:form.render()
-							<input type="submit" value="Edit Text" />
-						</form>
-					</div>
-				</div>
-			</div>
-
-
-			<footer>
-				<p>&copy; Ajay and Kevin 2011</p>
-			</footer>
-		</div>
-	</body>
-
-	-->
 </html>

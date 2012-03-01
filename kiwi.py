@@ -91,7 +91,7 @@ class save:
         return 'failure'
 
 class load:
-   def POST(self):
+   def POST(self):  
      i = web.input()
      userID = str(i.username).lower()
      password = str(i.password)
